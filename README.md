@@ -1,21 +1,5 @@
 # Seel Widget SDK - Android
 
-[![CI Status](https://img.shields.io/travis/seel/SeelWidget.svg?style=flat)](https://travis-ci.org/seel/SeelWidget)
-[![Version](https://img.shields.io/cocoapods/v/SeelWidget.svg?style=flat)](https://cocoapods.org/pods/SeelWidget)
-[![License](https://img.shields.io/cocoapods/l/SeelWidget.svg?style=flat)](https://cocoapods.org/pods/SeelWidget)
-[![Platform](https://img.shields.io/cocoapods/p/SeelWidget.svg?style=flat)](https://cocoapods.org/pods/SeelWidget)
-
-The Seel Widget SDK for Android provides a seamless integration of Seel's Worry-Free Purchase™ protection service into your Android applications.
-
-## Features
-
-- 🛡️ **Warranty Service Integration** - Provide warranty and insurance services for products
-- 📱 **Native Android Components** - Fully native Android user interface
-- 🎨 **Customizable Styling** - Support for custom appearance and themes
-- 📊 **Real-time Pricing** - Calculate warranty prices based on product information in real-time
-- 🔄 **Event Tracking** - Complete user behavior tracking and analytics
-- 📋 **Detailed Information Display** - Detailed warranty terms and coverage explanations
-
 ## Requirements
 
 - Android API 24 (Android 7.0)+
