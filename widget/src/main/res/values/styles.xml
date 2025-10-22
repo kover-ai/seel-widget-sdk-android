@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme -->
+    <style name="Theme.SeelWidget" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/seel_primary</item>
+        <item name="colorPrimaryVariant">@color/seel_secondary</item>
+        <item name="colorOnPrimary">@color/seel_background</item>
+        <item name="colorSecondary">@color/seel_secondary</item>
+        <item name="colorSecondaryVariant">@color/seel_secondary</item>
+        <item name="colorOnSecondary">@color/seel_background</item>
+        <item name="android:colorBackground">@color/seel_background</item>
+        <item name="colorOnBackground">@color/seel_text_primary</item>
+        <item name="colorSurface">@color/seel_background</item>
+        <item name="colorOnSurface">@color/seel_text_primary</item>
+    </style>
+    
+    <!-- Info Activity Theme -->
+    <style name="Theme.SeelWidget.Info" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/seel_info_background</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/SeelWidget.Animation</item>
+    </style>
+    
+    <!-- Animation Style -->
+    <style name="SeelWidget.Animation" parent="android:Animation">
+        <item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@android:anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@android:anim/fade_out</item>
+    </style>
+    
+    <!-- Button Styles -->
+    <style name="SeelWidget.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/seel_button_primary</item>
+        <item name="android:textColor">@color/seel_background</item>
+        <item name="android:textSize">6sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="SeelWidget.Button.Secondary" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/seel_text_secondary</item>
+        <item name="android:textSize">7sp</item>
+    </style>
+    
+    <!-- Navigation Bar Styles -->
+    <style name="NavigationBar">
+        <item name="android:background">@color/seel_nav_background</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+    
+    <style name="NavigationBar.Title">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/seel_nav_title</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <style name="NavigationBar.BackButton">
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:contentDescription">返回</item>
+    </style>
+    
+    <style name="NavigationBar.RightButton">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/seel_nav_right_button</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:minWidth">44dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>
+
+
+
+

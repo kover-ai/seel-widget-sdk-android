@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="seel_primary">#2121C4</color>
+    <color name="seel_secondary">#333333</color>
+    <color name="seel_text_primary">#000000</color>
+    <color name="seel_text_secondary">#565656</color>
+    <color name="seel_text_tertiary">#5C5F62</color>
+    <color name="seel_background">#FFFFFF</color>
+    <color name="seel_info_background">#00000030</color>
+    <color name="seel_coverage_background">#333333</color>
+    
+    <!-- Navigation Bar Colors -->
+    <color name="seel_nav_background">#F2F2F7</color>
+    <color name="seel_nav_title">#000000</color>
+    <color name="seel_nav_back_button">#007AFF</color>
+    <color name="seel_nav_right_button">#007AFF</color>
+    <color name="seel_nav_divider">#C6C6C8</color>
+</resources>
+
+
+
+
