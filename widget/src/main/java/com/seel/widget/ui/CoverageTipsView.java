@@ -43,7 +43,7 @@ public class CoverageTipsView extends LinearLayout {
     private void createViews() {
         // Create title
         titleText = new TextView(getContext());
-        titleText.setText("Easy resolution");
+        titleText.setText("Easy Resolution");
         titleText.setTextSize(16);
         titleText.setTextColor(getResources().getColor(android.R.color.black));
         titleText.setTypeface(null, android.graphics.Typeface.BOLD);

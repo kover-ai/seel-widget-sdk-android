@@ -111,20 +111,20 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.5.0'
 }
 
-// 复制 AAR 文件到根目录，方便分发
+// Copy AAR file to root directory for distribution
 task copyAar(type: Copy) {
     from "$buildDir/outputs/aar/widget-release.aar"
     into "$rootDir/dist"
     rename { "seel-widget-sdk.aar" }
 }
 
-// 创建分发目录
+// Create distribution directory
 task createDistDir {
     doLast {
         mkdir "$rootDir/dist"
     }
 }
 
-// 确保先创建目录再复制
+// Ensure directory is created before copying
 copyAar.dependsOn createDistDir
 copyAar.dependsOn 'assembleRelease'

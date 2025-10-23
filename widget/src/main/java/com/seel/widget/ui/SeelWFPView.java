@@ -36,6 +36,7 @@ public class SeelWFPView extends LinearLayout {
 
     // Data
     private QuotesResponse quoteResponse;
+    private Boolean loading;
 
     // UI Components
     private SeelWFPTitleView titleView;
@@ -59,6 +60,8 @@ public class SeelWFPView extends LinearLayout {
 
     private void init() {
         setOrientation(VERTICAL);
+
+        loading = false;
 
         // Create views
         createViews();
@@ -148,9 +151,12 @@ public class SeelWFPView extends LinearLayout {
      * Get quote
      */
     private void getQuote(QuotesRequest quote, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
+        loading = true;
+        updateViews();
         SeelApiClient.getInstance(getContext()).getQuotes(quote, new SeelApiCallback<QuotesResponse>() {
             @Override
             public void onSuccess(QuotesResponse response) {
+                loading = false;
                 ((Activity) getContext()).runOnUiThread(() -> {
                     quoteResponse = response;
                     updateViews();
@@ -174,6 +180,7 @@ public class SeelWFPView extends LinearLayout {
 
             @Override
             public void onError(NetworkError error, String message) {
+                loading = false;
                 quoteResponse = null;
                 updateViews();
                 // Handle error
@@ -199,6 +206,7 @@ public class SeelWFPView extends LinearLayout {
         titleView.setTitle(quoteResponse != null ? quoteResponse.getExtraInfo().getWidgetTitle() : null);
         titleView.setPrice(quoteResponse != null && !isRejected ? quoteResponse.getPrice() : null);
         titleView.setShowInfo(quoteResponse != null && !isRejected);
+        titleView.setLoading(loading);
         titleView.updateViews();
 
         // Update switch
