@@ -183,6 +183,7 @@ public class SeelWFPView extends LinearLayout {
                 loading = false;
                 quoteResponse = null;
                 updateViews();
+                optedChanged(false);
                 // Handle error
                 android.util.Log.e("SeelWFPView", "SeelWFPView_Get quote error: " + message);
                 if (callback != null) {
