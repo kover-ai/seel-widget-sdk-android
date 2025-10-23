@@ -3,6 +3,7 @@ package com.seel.widget.models;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Event request model
@@ -53,11 +54,11 @@ public class EventsRequest {
     private String eventType;
 
     /**
-     * Event information object
+     * Event information object as key-value pairs
      * Each event_type has its own unique schema. For specific details, please refer to the custom pixel guide.
      */
     @SerializedName("event_info")
-    private EventInfo eventInfo;
+    private Map<String, Object> eventInfo;
 
     public EventsRequest(String sessionID, String customerID, String eventSource, String eventType) {
         this.sessionID = sessionID;
@@ -130,11 +131,11 @@ public class EventsRequest {
         this.eventType = eventType;
     }
 
-    public EventInfo getEventInfo() {
+    public Map<String, Object> getEventInfo() {
         return eventInfo;
     }
 
-    public void setEventInfo(EventInfo eventInfo) {
+    public void setEventInfo(Map<String, Object> eventInfo) {
         this.eventInfo = eventInfo;
     }
 
