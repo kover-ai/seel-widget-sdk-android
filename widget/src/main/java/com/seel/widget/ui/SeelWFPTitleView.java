@@ -31,6 +31,7 @@ public class SeelWFPTitleView extends LinearLayout {
     // Data
     private String title;
     private Double price;
+    private Boolean loading;
     private boolean showInfo = false;
     private boolean showPowered = false;
     
@@ -38,6 +39,7 @@ public class SeelWFPTitleView extends LinearLayout {
     private ImageView seelIcon;
     private TextView titleLabel;
     private TextView priceLabel;
+    private LoadingAnimationView animationView;
     private ImageView infoButton;
     private TextView poweredLabel;
     private ImageView seelWordIcon;
@@ -73,6 +75,7 @@ public class SeelWFPTitleView extends LinearLayout {
         // Create text container
         LinearLayout textContainer = new LinearLayout(getContext());
         textContainer.setOrientation(VERTICAL);
+        textContainer.setPadding(DpPxUtils.dp(6), 0, 0, 0);
         
         // Create title row
         LinearLayout titleRow = new LinearLayout(getContext());
@@ -87,9 +90,12 @@ public class SeelWFPTitleView extends LinearLayout {
         
         // Create price label
         priceLabel = new TextView(getContext());
-        priceLabel.setText("for -");
+        priceLabel.setText(" for -");
         priceLabel.setTextSize(10);
         priceLabel.setTextColor(getResources().getColor(android.R.color.black));
+
+        // Create animation view
+        animationView = new LoadingAnimationView(getContext());
         
         // Create info button
         infoButton = new ImageView(getContext());
@@ -103,12 +109,13 @@ public class SeelWFPTitleView extends LinearLayout {
         // Create detail row
         LinearLayout detailRow = new LinearLayout(getContext());
         detailRow.setOrientation(HORIZONTAL);
-        
+        detailRow.setGravity(Gravity.CENTER_VERTICAL);
+
         // Create Powered by label
         poweredLabel = new TextView(getContext());
         poweredLabel.setText(R.string.powered_by);
         poweredLabel.setTextSize(7.5f);
-        poweredLabel.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        poweredLabel.setTextColor(0xFF565656);
         
         // Create Seel word icon
         seelWordIcon = new ImageView(getContext());
@@ -117,6 +124,7 @@ public class SeelWFPTitleView extends LinearLayout {
         // Assemble views
         titleRow.addView(titleLabel);
         titleRow.addView(priceLabel);
+        titleRow.addView(animationView);
         titleRow.addView(infoButton);
         
         detailRow.addView(poweredLabel);
@@ -134,16 +142,21 @@ public class SeelWFPTitleView extends LinearLayout {
         LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(DpPxUtils.dp(24), DpPxUtils.dp(24));
         seelIcon.setLayoutParams(iconParams);
         
+        // Set animation view size
+        LinearLayout.LayoutParams animationParams = new LinearLayout.LayoutParams(DpPxUtils.dp(30), DpPxUtils.dp(11));
+        animationParams.leftMargin = DpPxUtils.dp(4);
+        animationView.setLayoutParams(animationParams);
+        
         // Set info button size - keep original image size
         LinearLayout.LayoutParams infoParams = new LinearLayout.LayoutParams(DpPxUtils.dp(12), DpPxUtils.dp(12));
-        infoParams.leftMargin = DpPxUtils.dp(2); // 2dp left margin
+        infoParams.leftMargin = DpPxUtils.dp(4);
         infoButton.setLayoutParams(infoParams);
         infoButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
         
         // Set seelWordIcon height same as poweredLabel
         // poweredLabel font size is 7.5f, calculate corresponding height
-        int textHeight = (int) (DpPxUtils.dp(7.5f) * 1.2f); // Font size * density * line height multiplier
-        int iconWidth = (int) (textHeight * 2.5f); // Calculate appropriate width ratio based on height
+        int textHeight = (int) (DpPxUtils.dp(7.5f) * 1.3f); // Font size * density * line height multiplier
+        int iconWidth = (textHeight * 2); // Calculate appropriate width ratio based on height
         LinearLayout.LayoutParams seelWordParams = new LinearLayout.LayoutParams(iconWidth, textHeight);
         seelWordIcon.setLayoutParams(seelWordParams);
         seelWordIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -190,9 +203,17 @@ public class SeelWFPTitleView extends LinearLayout {
      */
     public void updateViews() {
         titleLabel.setText(title);
-        // Update price display
+
+        boolean isLoading = loading != null && loading;
+        animationView.setVisibility(isLoading ? VISIBLE : GONE);
         if (price != null) {
-            priceLabel.setText(" for $" + String.format("%.2f", price));
+            if (isLoading) {
+                animationView.startAnimating();
+                priceLabel.setText(" for");
+            } else  {
+                animationView.stopAnimating();
+                priceLabel.setText(" for $" + String.format("%.2f", price));
+            }
             priceLabel.setVisibility(VISIBLE);
         } else {
             priceLabel.setVisibility(GONE);
@@ -206,11 +227,13 @@ public class SeelWFPTitleView extends LinearLayout {
         detailRow.setVisibility(showPowered ? VISIBLE : GONE);
     }
 
+    // Getters and Setters
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-    // Getters and Setters
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
+    public Boolean getLoading() { return loading; }
+    public void setLoading(Boolean loading) { this.loading = loading; }
     
     public boolean isShowInfo() { return showInfo; }
     public void setShowInfo(boolean showInfo) { this.showInfo = showInfo; }

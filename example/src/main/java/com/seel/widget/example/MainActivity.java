@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import com.seel.widget.SeelWidgetSDK;
 import com.seel.widget.core.SeelClient;
 import com.seel.widget.core.SeelEnvironment;
-import com.seel.widget.models.EventInfo;
+import java.util.HashMap;
 import com.seel.widget.models.EventsRequest;
 import com.seel.widget.models.EventsResponse;
 import com.seel.widget.models.QuotesRequest;
@@ -281,8 +281,8 @@ public class MainActivity extends Activity {
         event.setCustomerID("1111");
         event.setEventSource("android");
         event.setEventType("product_page_enter");
-        EventInfo eventInfo = new EventInfo();
-        eventInfo.setUserEmail("xie@seel.com");
+        HashMap<String, Object> eventInfo = new HashMap<>();
+        eventInfo.put("user_email", "xie@seel.com");
         event.setEventInfo(eventInfo);
 
         setLoading(true);

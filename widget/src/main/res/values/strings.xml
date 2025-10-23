@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Seel Widget SDK</string>
-    <string name="powered_by">POWERED BY</string>
+    <string name="powered_by">Powered by</string>
     <string name="whats_covered">What\'s Covered by Seel</string>
     <string name="opt_in_now">Opt-In Now for Full Protection</string>
     <string name="no_need">No Need</string>
