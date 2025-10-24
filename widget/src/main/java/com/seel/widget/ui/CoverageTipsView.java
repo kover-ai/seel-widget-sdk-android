@@ -45,28 +45,28 @@ public class CoverageTipsView extends LinearLayout {
         titleText = new TextView(getContext());
         titleText.setText("Easy Resolution");
         titleText.setTextSize(16);
-        titleText.setTextColor(getResources().getColor(android.R.color.black));
+        titleText.setTextColor(0xFF1E2022);
         titleText.setTypeface(null, android.graphics.Typeface.BOLD);
         
         // Create subtitle
         subtitleText = new TextView(getContext());
         subtitleText.setText("Resolve your issues with just a few clicks");
         subtitleText.setTextSize(14);
-        subtitleText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        subtitleText.setTextColor(0xFF5C5F62);
         
         // Create description
         descriptionText = new TextView(getContext());
         descriptionText.setText("Complete Peace of Mind");
-        descriptionText.setTextSize(14);
-        descriptionText.setTextColor(getResources().getColor(android.R.color.black));
+        descriptionText.setTextSize(16);
+        descriptionText.setTextColor(0xFF1E2022);
         descriptionText.setTypeface(null, android.graphics.Typeface.BOLD);
         
         // Create benefits list
         benefitsText = new TextView(getContext());
         benefitsText.setText("• Zero-risk on your order with our protection\n• Get your refund promptly");
-        benefitsText.setTextSize(12);
-        benefitsText.setTextColor(getResources().getColor(android.R.color.darker_gray));
-        
+        benefitsText.setTextSize(14);
+        benefitsText.setTextColor(0xFF5C5F62);
+
         // Add to layout
         addView(titleText);
         addView(subtitleText);
