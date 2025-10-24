@@ -1,7 +1,10 @@
 package com.seel.widget.ui;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +33,10 @@ public class SeelWFPView extends LinearLayout {
     public interface WFPOptedInCallback {
         void onOptedIn(boolean optedIn, QuotesResponse quote);
     }
+
+    /// Opted Valid Time
+    /// <=0: Never Expired
+    public static int optedValidTime = 0;
 
     // Callbacks
     private WFPOptedInCallback optedInCallback;
@@ -127,32 +134,34 @@ public class SeelWFPView extends LinearLayout {
      * Set data and get quote
      */
     public void setup(QuotesRequest quote, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
-        getQuote(quote, callback);
+        getQuote(quote, true, callback);
     }
 
     /**
      * Update component when cart info changes
      */
     public void updateWidgetWhenChanged(QuotesRequest quote, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
-        getQuote(quote, callback);
+        getQuote(quote, false, callback);
     }
 
     /**
      * Set switch state
      */
-    void turnOn(boolean on) {
-        switcher.setOn(on);
-        if (quoteResponse != null) {
-            optedChanged(on);
-        }
+    boolean turnOn(boolean on) {
+        boolean isTargetOn = optedChanged(on);
+        switcher.setOn(isTargetOn);
+        return isTargetOn;
     }
 
     /**
      * Get quote
      */
-    private void getQuote(QuotesRequest quote, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
+    private void getQuote(QuotesRequest quote, boolean isSetup, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
         loading = true;
         updateViews();
+        Boolean _localOptedIn = localOptedIn();
+        boolean isDefaultOn = _localOptedIn != null ? _localOptedIn : (isSetup ? quote.getIsDefaultOn() : switcher.isOn());
+        quote.setIsDefaultOn(isDefaultOn);
         SeelApiClient.getInstance(getContext()).getQuotes(quote, new SeelApiCallback<QuotesResponse>() {
             @Override
             public void onSuccess(QuotesResponse response) {
@@ -160,17 +169,9 @@ public class SeelWFPView extends LinearLayout {
                 ((Activity) getContext()).runOnUiThread(() -> {
                     quoteResponse = response;
                     updateViews();
-                    
                     // Set switch state based on isDefaultOn
                     boolean isTargetOn = response.getIsDefaultOn() != null && response.getIsDefaultOn();
-                    boolean canOptedIn = canOptedIn();
-                    if (!canOptedIn) {
-                        isTargetOn = false;
-                    }
-                    if (switcher.isOn() != isTargetOn) {
-                        turnOn(isTargetOn);
-                    }
-                    
+                    turnOn(isTargetOn);
                     // Call external callback
                     if (callback != null) {
                         callback.onSuccess(response);
@@ -183,6 +184,7 @@ public class SeelWFPView extends LinearLayout {
                 loading = false;
                 quoteResponse = null;
                 updateViews();
+                turnOn(false);
                 // Handle error
                 android.util.Log.e("SeelWFPView", "SeelWFPView_Get quote error: " + message);
                 if (callback != null) {
@@ -283,31 +285,64 @@ public class SeelWFPView extends LinearLayout {
      * Switch state changed
      */
     private void statusChanged(boolean isChecked) {
-        optedChanged(isChecked);
+        boolean newOptIn = optedChanged(isChecked);
+        updateLocalOptedIn(newOptIn);
     }
 
     /**
      * Check if can opt in
      */
     private boolean canOptedIn() {
-        return quoteResponse != null && !quoteResponse.isRejected();
+        return !loading && quoteResponse != null && !quoteResponse.isRejected();
     }
     
     /**
      * Opt-in state changed
      */
-    private void optedChanged(boolean opted) {
-        if (!canOptedIn()) {
-            return;
+    private boolean optedChanged(boolean opted) {
+        boolean isTargetOn = opted;
+        boolean canOptedIn = canOptedIn();
+        if (!canOptedIn) {
+            isTargetOn = false;
         }
-
         if (optedInCallback != null) {
-            optedInCallback.onOptedIn(opted, quoteResponse);
+            optedInCallback.onOptedIn(isTargetOn, quoteResponse);
         }
+        return isTargetOn;
     }
 
     // Set callbacks
     public void setOptedInCallback(WFPOptedInCallback callback) {
         this.optedInCallback = callback;
     }
+
+    public static void cleanLocalOpted(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SEEL_SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(Constants.OPTED_VALUE_KEY);
+        editor.remove(Constants.OPTED_OPERATION_TIME_KEY);
+        editor.apply();
+    }
+
+    private void updateLocalOptedIn(Boolean optedIn) {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(Constants.SEEL_SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.OPTED_VALUE_KEY, optedIn);
+        editor.putLong(Constants.OPTED_OPERATION_TIME_KEY, System.currentTimeMillis());
+        editor.apply();
+    }
+    private Boolean localOptedIn() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(Constants.SEEL_SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        if (SeelWFPView.optedValidTime > 0) {
+            long currentTimeMillis = System.currentTimeMillis();
+            long optedOperationTime = sharedPreferences.getLong(Constants.OPTED_OPERATION_TIME_KEY, -1);
+            long optedExpireTime = optedOperationTime > 0 ? (optedOperationTime + SeelWFPView.optedValidTime * 1000L) : 0;
+            if (optedOperationTime < 0 || optedExpireTime  <= currentTimeMillis) {
+                // no local value
+                return null;
+            }
+        }
+        return sharedPreferences.getBoolean(Constants.OPTED_VALUE_KEY, switcher.isOn());
+    }
+
 }

@@ -23,6 +23,11 @@ public class Constants {
     public static final int READ_TIMEOUT = 30000; // 30 seconds
     public static final int WRITE_TIMEOUT = 30000; // 30 seconds
     public static final int MAX_RETRY_ATTEMPTS = 3;
+
+    // Local Cache
+    public static final String SEEL_SHARED_PREFERENCES_NAME = "Seel.SharedPreferences";
+    public static final String OPTED_VALUE_KEY = "Seel.OptedValueKey";
+    public static final String OPTED_OPERATION_TIME_KEY = "Seel.OptedOperationTimeKey";
     
     // API Endpoints
     public static final String QUOTES_ENDPOINT = "quotes";

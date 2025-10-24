@@ -1,6 +1,7 @@
 package com.seel.widget.example;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -33,13 +34,16 @@ public class MainActivity extends Activity {
     private Button setupButton;
     private Button eventButton;
     private Button updateButton;
-    
+    private Button cleanButton;
+
     // Test parameter controls
     private Switch errorSwitch;
     private Switch acceptedSwitch;
     private Switch defaultSwitch;
     private SeekBar countSeekBar;
     private TextView countValueText;
+    private SeekBar optedValidTimeSeekBar;
+    private TextView optedValidTimeValueText;
     private ProgressBar loadingIndicator;
 
     @Override
@@ -47,7 +51,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         // Initialize SeelClient
-        SeelClient.getInstance().configure(this, "yojct9zbwxok8961hr7e1s6i3fgmm1o1", SeelEnvironment.DEVELOPMENT, null);
+        SeelClient.getInstance().configure(this, TestDataHelper.apiKey, SeelEnvironment.DEVELOPMENT, null);
+        SeelWFPView.optedValidTime = optedValidTime() * 60;
 
         // Create main layout
         LinearLayout mainLayout = new LinearLayout(this);
@@ -138,10 +143,51 @@ public class MainActivity extends Activity {
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
+        // Opted Valid Time SeekBar
+        LinearLayout optedValidTimeLayout = new LinearLayout(this);
+        optedValidTimeLayout.setOrientation(LinearLayout.HORIZONTAL);
+        optedValidTimeLayout.setPadding(0, 20, 0, 20);
+
+        TextView optedValidTimeLabel = new TextView(this);
+        optedValidTimeLabel.setText("Opted Valid Time (min/mins): ");
+        optedValidTimeLabel.setTextColor(Color.WHITE);
+        optedValidTimeLabel.setTextSize(16);
+        optedValidTimeLabel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        optedValidTimeValueText = new TextView(this);
+        optedValidTimeValueText.setText(String.valueOf(optedValidTime()));
+        optedValidTimeValueText.setTextColor(Color.WHITE);
+        optedValidTimeValueText.setTextSize(16);
+        optedValidTimeValueText.setPadding(20, 0, 20, 0);
+        optedValidTimeValueText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        optedValidTimeSeekBar = new SeekBar(this);
+        optedValidTimeSeekBar.setMax(60);
+        optedValidTimeSeekBar.setProgress(optedValidTime());
+        optedValidTimeSeekBar.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        optedValidTimeSeekBar.setPadding(10, 0, 10, 0);
+        optedValidTimeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                optedValidTimeValueText.setText(String.valueOf(progress));
+                saveValidTime(progress);
+                SeelWFPView.optedValidTime = progress * 60;
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
         countLayout.addView(countLabel);
         countLayout.addView(countValueText);
         countLayout.addView(countSeekBar);
         parent.addView(countLayout);
+
+        optedValidTimeLayout.addView(optedValidTimeLabel);
+        optedValidTimeLayout.addView(optedValidTimeValueText);
+        optedValidTimeLayout.addView(optedValidTimeSeekBar);
+        parent.addView(optedValidTimeLayout);
     }
 
     private LinearLayout createSwitchLayout(String label, boolean defaultValue) {
@@ -191,12 +237,30 @@ public class MainActivity extends Activity {
         buttonRow1.addView(updateButton);
         parent.addView(buttonRow1);
 
-        // Event Button (full width)
+        LinearLayout buttonRow2 = new LinearLayout(this);
+        buttonRow2.setOrientation(LinearLayout.HORIZONTAL);
+        buttonRow2.setPadding(0, 20, 0, 20);
+
+        // Event Button
         eventButton = new Button(this);
         eventButton.setText("Send Event");
         eventButton.setOnClickListener(v -> createEventRequest());
         eventButton.setPadding(20, 20, 20, 20);
-        parent.addView(eventButton);
+        LinearLayout.LayoutParams eventParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        eventParams.setMargins(0, 0, 10, 0);
+        eventButton.setLayoutParams(eventParams);
+
+        cleanButton = new Button(this);
+        cleanButton.setText("Clean OptedIn Cache");
+        cleanButton.setOnClickListener(v -> cleanOptedIn());
+        cleanButton.setPadding(20, 20, 20, 20);
+        LinearLayout.LayoutParams cleanParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        cleanParams.setMargins(10, 0, 0, 0);
+        cleanButton.setLayoutParams(cleanParams);
+
+        buttonRow2.addView(eventButton);
+        buttonRow2.addView(cleanButton);
+        parent.addView(buttonRow2);
     }
 
     private void createSampleRequest() {
@@ -206,12 +270,12 @@ public class MainActivity extends Activity {
         boolean isDefaultOn = defaultSwitch.isChecked();
         int itemCount = countSeekBar.getProgress() + 1;
 
-        android.util.Log.d("SeelWidgetExample", "Creating quote with parameters - Error: " + isError + 
+        android.util.Log.d("SeelWidgetExample", "Creating quote with parameters - Error: " + isError +
                 ", Accepted: " + isAccepted + ", DefaultOn: " + isDefaultOn + ", Count: " + itemCount);
 
         // Generate test data based on parameters
         String json = TestDataHelper.generateQuoteJson(isError, isAccepted, isDefaultOn, itemCount);
-        
+
 //        android.util.Log.d("SeelWidgetExample", "Generated JSON: " + json);
 
         // Show loading indicator
@@ -244,12 +308,12 @@ public class MainActivity extends Activity {
         boolean isDefaultOn = defaultSwitch.isChecked();
         int itemCount = countSeekBar.getProgress() + 1;
 
-        android.util.Log.d("SeelWidgetExample", "Updating quote with parameters - Error: " + isError + 
+        android.util.Log.d("SeelWidgetExample", "Updating quote with parameters - Error: " + isError +
                 ", Accepted: " + isAccepted + ", DefaultOn: " + isDefaultOn + ", Count: " + itemCount);
 
         // Generate test data based on parameters
         String json = TestDataHelper.generateQuoteJson(isError, isAccepted, isDefaultOn, itemCount);
-        
+
         android.util.Log.d("SeelWidgetExample", "Generated JSON: " + json);
 
         // Show loading indicator
@@ -301,6 +365,10 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void cleanOptedIn() {
+        SeelWFPView.cleanLocalOpted(getApplicationContext());
+    }
+
     private void setLoading(boolean loading) {
         if (loading) {
             loadingIndicator.setVisibility(View.VISIBLE);
@@ -315,15 +383,35 @@ public class MainActivity extends Activity {
         }
     }
 
+    private int optedValidTime() {
+        SharedPreferences sharedPreferences = getSharedPreferences(TestDataHelper.exampleSharedPreferencesName, MODE_PRIVATE);
+        int optedValidTime = sharedPreferences.getInt(TestDataHelper.optedValidTimeKey, -1);
+        return optedValidTime >= 0 ? optedValidTime : TestDataHelper.defaultOptedValidTime;
+    }
+
+    private void saveValidTime(int optedValidTime) {
+        SharedPreferences sharedPreferences = getSharedPreferences(TestDataHelper.exampleSharedPreferencesName, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(TestDataHelper.optedValidTimeKey, optedValidTime);
+        editor.apply();
+    }
+
     /**
      * Helper class to generate test data based on parameters
      */
     private static class TestDataHelper {
-        
+
+        /// Default Opted Valid Time: 30 mins
+        public  static  int defaultOptedValidTime = 30;
+        public  static  String exampleSharedPreferencesName = "SeelExampleSharedPreferences";
+        public  static  String optedValidTimeKey = "OptedValidTimeKey";
+
+        public  static  String apiKey = "yojct9zbwxok8961hr7e1s6i3fgmm1o1";
+
         public static String generateQuoteJson(boolean isError, boolean isAccepted, boolean isDefaultOn, int itemCount) {
             String type = isError ? "" : "poshmark-wfp";
             String country = isAccepted ? "US" : "CN";
-            
+
             return "{\n" +
                     "    \"type\": \"" + type + "\",\n" +
                     "    \"cart_id\": \"3b87ea2a6cecdb94bae186263feb9e7f\",\n" +
