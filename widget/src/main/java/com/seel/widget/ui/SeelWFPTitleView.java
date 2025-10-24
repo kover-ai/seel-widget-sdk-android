@@ -164,6 +164,8 @@ public class SeelWFPTitleView extends LinearLayout {
         int textHeight = (int) (DpPxUtils.dp(7.5f) * 1.3f); // Font size * density * line height multiplier
         int iconWidth = (textHeight * 2); // Calculate appropriate width ratio based on height
         LinearLayout.LayoutParams seelWordParams = new LinearLayout.LayoutParams(iconWidth, textHeight);
+        seelWordParams.topMargin = DpPxUtils.dp(0.5f); // Add small margin between text and icon
+        seelWordParams.gravity = Gravity.CENTER_VERTICAL; // Ensure vertical center alignment
         seelWordIcon.setLayoutParams(seelWordParams);
         seelWordIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
         
