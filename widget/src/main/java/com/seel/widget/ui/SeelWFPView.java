@@ -134,15 +134,14 @@ public class SeelWFPView extends LinearLayout {
      * Set data and get quote
      */
     public void setup(QuotesRequest quote, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
-        switcher.setOn(quote.getIsDefaultOn());
-        getQuote(quote, callback);
+        getQuote(quote, true, callback);
     }
 
     /**
      * Update component when cart info changes
      */
     public void updateWidgetWhenChanged(QuotesRequest quote, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
-        getQuote(quote, callback);
+        getQuote(quote, false, callback);
     }
 
     /**
@@ -157,11 +156,11 @@ public class SeelWFPView extends LinearLayout {
     /**
      * Get quote
      */
-    private void getQuote(QuotesRequest quote, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
+    private void getQuote(QuotesRequest quote, boolean isSetup, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
         loading = true;
         updateViews();
         Boolean _localOptedIn = localOptedIn();
-        boolean isDefaultOn = _localOptedIn != null ? _localOptedIn : switcher.isOn();
+        boolean isDefaultOn = _localOptedIn != null ? _localOptedIn : (isSetup ? quote.getIsDefaultOn() : switcher.isOn());
         quote.setIsDefaultOn(isDefaultOn);
         SeelApiClient.getInstance(getContext()).getQuotes(quote, new SeelApiCallback<QuotesResponse>() {
             @Override
