@@ -6,19 +6,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
-import com.seel.widget.ui.SeelSwitch;
-import android.widget.TextView;
 
 import com.seel.widget.R;
 import com.seel.widget.core.Constants;
 import com.seel.widget.models.QuotesRequest;
 import com.seel.widget.models.QuotesResponse;
-import com.seel.widget.models.QuoteStatus;
-import com.seel.widget.models.EventsRequest;
-import com.seel.widget.models.EventsResponse;
 import com.seel.widget.network.SeelApiClient;
 import com.seel.widget.network.SeelApiClient.SeelApiCallback;
 import com.seel.widget.network.NetworkError;
@@ -36,7 +29,8 @@ public class SeelWFPView extends LinearLayout {
 
     /// Opted Valid Time
     /// <=0: Never Expired
-    public static int optedValidTime = 0;
+    /// Default is 365 days
+    public static int optedValidTime = 365 * 24 * 3600;
 
     // Callbacks
     private WFPOptedInCallback optedInCallback;
@@ -79,18 +73,11 @@ public class SeelWFPView extends LinearLayout {
     private void createViews() {
         // Create title view
         titleView = new SeelWFPTitleView(getContext());
-        titleView.setInfoClickListener(new SeelWFPTitleView.InfoClickListener() {
-            @Override
-            public void onInfoClicked() {
-                displayInfo();
-            }
-        });
+        titleView.setInfoClickListener(this::displayInfo);
 
         // Create switch
         switcher = new SeelSwitch(getContext());
-        switcher.setOnValueChangedListener((isChecked) -> {
-            statusChanged(isChecked);
-        });
+        switcher.setOnValueChangedListener(this::statusChanged);
         
         // Set style using constants
         int switcherColor = Constants.PRIMARY_COLOR;
@@ -162,7 +149,7 @@ public class SeelWFPView extends LinearLayout {
         Boolean _localOptedIn = localOptedIn();
         boolean isDefaultOn = _localOptedIn != null ? _localOptedIn : (isSetup ? quote.getIsDefaultOn() : switcher.isOn());
         quote.setIsDefaultOn(isDefaultOn);
-        SeelApiClient.getInstance(getContext()).getQuotes(quote, new SeelApiCallback<QuotesResponse>() {
+        SeelApiClient.getInstance(getContext()).getQuotes(quote, new SeelApiCallback<>() {
             @Override
             public void onSuccess(QuotesResponse response) {
                 loading = false;
@@ -252,7 +239,7 @@ public class SeelWFPView extends LinearLayout {
 
         // Launch detail Activity
         android.content.Intent intent = new android.content.Intent(getContext(), SeelWFPInfoActivity.class);
-        intent.putExtra("quote_response", (java.io.Serializable) quoteResponse);
+        intent.putExtra("quote_response", quoteResponse);
         
         // Use static callback handling mechanism
         SeelWFPInfoActivity.setStaticCallbacks(
