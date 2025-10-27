@@ -1,6 +1,8 @@
 package com.seel.widget;
 
 import android.content.Context;
+import java.util.UUID;
+
 import com.seel.widget.core.SeelClient;
 import com.seel.widget.core.SeelEnvironment;
 import com.seel.widget.models.EventsRequest;
@@ -92,7 +94,10 @@ public class SeelWidgetSDK {
             callback.onError(NetworkError.CONFIGURATION_ERROR, "Context not available");
             return;
         }
-        
+
+        UUID uuid = UUID.randomUUID();
+        String uuidString = uuid.toString();
+        event.setEventID(uuidString);
         SeelApiClient.getInstance(context).createEvents(event, callback);
     }
 }
