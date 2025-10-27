@@ -1,14 +1,19 @@
 package com.seel.widget.models;
 
 import com.google.gson.annotations.SerializedName;
-import java.io.Serializable;
-import java.util.List;
+
 import java.util.Map;
 
 /**
  * Event request model
  */
 public class EventsRequest {
+
+    /**
+     * event ID
+     */
+    @SerializedName("event_id")
+    private String eventID;
 
     /**
      * Session ID
@@ -74,6 +79,10 @@ public class EventsRequest {
         this.eventType = null;
     }
 
+    public String getEventID() { return eventID; }
+
+    public void setEventID(String eventID) { this.eventID = eventID; }
+
     // Getters and setters
     public String getSessionID() {
         return sessionID;
@@ -138,5 +147,4 @@ public class EventsRequest {
     public void setEventInfo(Map<String, Object> eventInfo) {
         this.eventInfo = eventInfo;
     }
-
 }

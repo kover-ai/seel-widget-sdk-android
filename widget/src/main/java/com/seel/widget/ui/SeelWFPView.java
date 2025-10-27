@@ -245,10 +245,12 @@ public class SeelWFPView extends LinearLayout {
         SeelWFPInfoActivity.setStaticCallbacks(
             () -> {
                 // OptedIn callback
+                updateLocalOptedIn(true);
                 turnOn(true);
             },
             () -> {
                 // NoNeed callback
+                updateLocalOptedIn(false);
                 turnOn(false);
             },
             () -> {

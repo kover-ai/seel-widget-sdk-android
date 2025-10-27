@@ -11,6 +11,12 @@ import java.util.Map;
 public class EventsResponse implements Serializable {
 
     /**
+     * event ID
+     */
+    @SerializedName("event_id")
+    private String eventID;
+
+    /**
      * Session ID
      */
     @SerializedName("session_id")
@@ -73,6 +79,10 @@ public class EventsResponse implements Serializable {
         this.eventSource = null;
         this.eventType = null;
     }
+
+    public String getEventID() { return eventID; }
+
+    public void setEventID(String eventID) { this.eventID = eventID; }
 
     // Getters and setters
     public String getSessionID() {
