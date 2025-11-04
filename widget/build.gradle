@@ -14,6 +14,7 @@ android {
     defaultConfig {
         minSdk 24
         targetSdk 34
+        versionName "1.0.0"
         
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -115,7 +116,7 @@ dependencies {
 task copyAar(type: Copy) {
     from "$buildDir/outputs/aar/widget-release.aar"
     into "$rootDir/dist"
-    rename { "seel-widget-sdk.aar" }
+    rename { "seel-widget-sdk-${android.defaultConfig.versionName}.aar" }
 }
 
 // Create distribution directory
