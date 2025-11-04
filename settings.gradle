@@ -1,10 +1,7 @@
 pluginManagement {
     repositories {
         google()
-        jcenter()
         mavenCentral()
-        maven{ url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
-        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
 
     }
 }
@@ -13,13 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url "https://jitpack.io"
-        }
-        maven{ url 'https://maven.aliyun.com/nexus/content/groups/public/'}
-        maven {
-            url 'https://maven.aliyun.com/repository/releases'
-        }
     }
 }
 
