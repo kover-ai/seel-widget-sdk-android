@@ -4,7 +4,7 @@
 
 - Android API 24 (Android 7.0)+
 - Java 11+
-- Gradle 7.0+
+- Gradle 8.0+
 
 ## Installation
 

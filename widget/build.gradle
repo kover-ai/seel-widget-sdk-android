@@ -60,7 +60,7 @@ android {
         }
     }
     
-    lintOptions {
+    lint {
         abortOnError false
         checkReleaseBuilds false
         warningsAsErrors false
@@ -70,14 +70,12 @@ android {
         textReport true
     }
     
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/*.kotlin_module'
+    packaging {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 
+                        'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/ASL2.0', 
+                        'META-INF/*.kotlin_module']
+        }
     }
 }
 
@@ -113,14 +111,14 @@ dependencies {
 }
 
 // Copy AAR file to root directory for distribution
-task copyAar(type: Copy) {
+tasks.register('copyAar', Copy) {
     from "$buildDir/outputs/aar/widget-release.aar"
     into "$rootDir/dist"
     rename { "seel-widget-sdk-${android.defaultConfig.versionName}.aar" }
 }
 
 // Create distribution directory
-task createDistDir {
+tasks.register('createDistDir') {
     doLast {
         mkdir "$rootDir/dist"
     }
