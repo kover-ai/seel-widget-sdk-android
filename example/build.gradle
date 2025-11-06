@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'com.seel.widget.example'
-    compileSdk 34
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
         applicationId "com.seel.widget.example"
-        minSdk 24
-        targetSdk 34
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -23,14 +23,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
         coreLibraryDesugaringEnabled true
     }
     buildFeatures {
         viewBinding true
     }
-    buildToolsVersion '34.0.0'
 }
 
 dependencies {
