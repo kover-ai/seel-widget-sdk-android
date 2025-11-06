@@ -9,11 +9,11 @@ plugins {
 
 android {
     namespace 'com.seel.widget'
-    compileSdk 34
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        minSdk 24
-        targetSdk 34
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
         versionName "1.0.0"
         
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -38,13 +38,9 @@ android {
     }
     
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
         coreLibraryDesugaringEnabled true
-    }
-    
-    kotlinOptions {
-        jvmTarget = '11'
     }
     
     buildFeatures {

@@ -3,8 +3,8 @@
 ## Requirements
 
 - Android API 24 (Android 7.0)+
-- Java 11+
-- Gradle 8.0+
+- Java 17+
+- Gradle 8.2+
 
 ## Installation
 
