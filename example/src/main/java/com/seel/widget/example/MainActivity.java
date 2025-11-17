@@ -15,7 +15,6 @@ import android.graphics.Color;
 
 import com.google.gson.Gson;
 import com.seel.widget.SeelWidgetSDK;
-import com.seel.widget.core.SeelClient;
 import com.seel.widget.core.SeelEnvironment;
 import java.util.HashMap;
 import com.seel.widget.models.EventsRequest;
@@ -50,8 +49,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize SeelClient
-        SeelClient.getInstance().configure(this, TestDataHelper.apiKey, SeelEnvironment.DEVELOPMENT, null);
+        // Initialize SeelWidgetSDK
+        SeelWidgetSDK.getInstance().configure(this, TestDataHelper.apiKey, SeelEnvironment.DEVELOPMENT);
         SeelWFPView.optedValidTime = optedValidTime() * 60;
 
         // Create main layout
