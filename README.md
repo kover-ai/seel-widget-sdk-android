@@ -14,7 +14,7 @@ Add the following to your `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation 'com.seel.widget:seel-widget-sdk:2.6.0'
+    implementation 'com.seel.widget:seel-widget-sdk:1.0.1'
 }
 ```
 
@@ -26,7 +26,7 @@ dependencies {
 
 ```gradle
 dependencies {
-    implementation files('libs/seel-widget-sdk-2.6.0.aar')
+    implementation files('libs/seel-widget-sdk-*.aar')
 }
 ```
 
@@ -37,11 +37,11 @@ dependencies {
 Initialize the SDK in your Application class or Activity:
 
 ```java
-import com.seel.widget.core.SeelClient;
+import com.seel.widget.core.SeelWidgetSDK;
 import com.seel.widget.core.SeelEnvironment;
 
 // Configure SDK
-SeelClient.getInstance().configure(
+SeelWidgetSDK.getInstance().configure(
     this, 
     "your_api_key_here", 
     SeelEnvironment.PRODUCTION
@@ -151,7 +151,7 @@ eventRequest.setEventSource("android_app");
 eventRequest.setEventType("product_page_enter");
 
 // Send event
-SeelClient.getInstance().createEvents(eventRequest, new SeelApiCallback() {
+SeelWidgetSDK.getInstance().createEvents(eventRequest, new SeelApiCallback() {
     @Override
     public void onSuccess(EventsResponse response) {
         System.out.println("Event sent successfully: " + response);
@@ -166,17 +166,16 @@ SeelClient.getInstance().createEvents(eventRequest, new SeelApiCallback() {
 
 ## API Reference
 
-### SeelClient
+### SeelWidgetSDK
 
 The main SDK client class responsible for configuration and network requests.
 
 #### Methods
 
 - `configure(Context context, String apiKey)` - Configure with default production environment
-- `configure(Context context, String apiKey, SeelEnvironment environment, String baseURL)` - Full configuration
+- `configure(Context context, String apiKey, SeelEnvironment environment)` - Full configuration
 - `getApiKey()` - Get current API key
 - `getEnvironment()` - Get current environment
-- `getBaseURL()` - Get base URL
 - `isConfigured()` - Check if configured
 
 ### SeelWFPView
@@ -244,11 +243,6 @@ The SDK requires the following permissions:
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
 
-## Requirements
-
-- **Android API 24 (Android 7.0)**
-- **Java 11+**
-
 ## Dependencies
 
 - Retrofit 2.9.0
@@ -288,7 +282,7 @@ seel-widget-sdk-android/
 ## Core Components
 
 ### 1. Core Functionality (core/)
-- **SeelClient**: Main SDK client for configuration and network requests
+- **SeelWidgetSDK**: Main SDK for configuration
 - **SeelEnvironment**: Environment enumeration (development/production)
 - **Constants**: Constant definitions
 
@@ -322,7 +316,7 @@ seel-widget-sdk-android/
 
 ## Integration Steps
 
-1. Initialize SeelClient in your Application class
+1. Initialize SeelWidgetSDK in your Application class
 2. Create SeelWFPView and set callbacks
 3. Build QuotesRequest and call setup method
 4. Handle user selection and URL opening callbacks
@@ -337,9 +331,12 @@ For questions or suggestions, please contact the Seel technical support team.
 
 ## Changelog
 
-### Version 2.6.0
+### Version 1.0.0
 - Initial release
 - Full Android compatibility
 - Complete UI component set
 - Network layer implementation
 - Example application included
+
+### Version 1.0.1
+- Update configuration API
