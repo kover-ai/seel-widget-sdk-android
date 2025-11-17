@@ -14,7 +14,7 @@ Add the following to your `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation 'com.seel.widget:seel-widget-sdk:2.6.0'
+    implementation 'com.seel.widget:seel-widget-sdk:1.0.1'
 }
 ```
 
@@ -26,7 +26,7 @@ dependencies {
 
 ```gradle
 dependencies {
-    implementation files('libs/seel-widget-sdk-2.6.0.aar')
+    implementation files('libs/seel-widget-sdk-*.aar')
 }
 ```
 
@@ -242,11 +242,6 @@ The SDK requires the following permissions:
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
-
-## Requirements
-
-- **Android API 24 (Android 7.0)**
-- **Java 11+**
 
 ## Dependencies
 
