@@ -136,16 +136,7 @@ mavenPublishing {
 }
 
 signing {
-    def signingKey = System.getenv("signing_secretKey")
-            ?: findProperty("signing_secretKey")
-
-    def signingPassword = System.getenv("signing_password")
-            ?: findProperty("signing_password")
-
-    if (signingKey != null && signingPassword != null) {
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign publishing.publications
-    }
+    sign publishing.publications
 }
 
 // Copy AAR file to root directory for distribution
