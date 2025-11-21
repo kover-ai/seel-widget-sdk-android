@@ -4,7 +4,7 @@
 
 - Android API 24 (Android 7.0)+
 - Java 17+
-- Gradle 8.2+
+- Gradle 8.13+
 
 ## Installation
 
@@ -14,7 +14,7 @@ Add the following to your `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation 'com.seel.widget:seel-widget-sdk:1.0.1'
+    implementation 'com.seel.widgetsdk:seel-widget-sdk:1.0.2'
 }
 ```
 

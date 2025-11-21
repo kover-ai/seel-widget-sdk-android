@@ -5,7 +5,10 @@ plugins {
     id 'kotlin-parcelize'
     id 'maven-publish'
     id 'signing'
+    id "com.vanniktech.maven.publish" version "0.35.0"
 }
+
+group = 'com.seel.widgetsdk'
 
 android {
     namespace 'com.seel.widget'
@@ -14,11 +17,11 @@ android {
     defaultConfig {
         minSdk rootProject.ext.minSdkVersion
         targetSdk rootProject.ext.targetSdkVersion
-        versionName "1.0.1"
-        
+        versionName rootProject.ext.version
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-        
+
         // Version information
         buildConfigField "String", "VERSION_NAME", "\"${project.version}\""
         buildConfigField "int", "VERSION_CODE", "1"
@@ -36,26 +39,26 @@ android {
             consumerProguardFiles 'consumer-rules.pro'
         }
     }
-    
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
         coreLibraryDesugaringEnabled true
     }
-    
+
     buildFeatures {
         buildConfig true
         viewBinding false
         dataBinding false
     }
-    
+
     testOptions {
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
         }
     }
-    
+
     lint {
         abortOnError false
         checkReleaseBuilds false
@@ -65,12 +68,12 @@ android {
         xmlReport true
         textReport true
     }
-    
+
     packaging {
         resources {
-            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 
-                        'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/ASL2.0', 
-                        'META-INF/*.kotlin_module']
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt',
+                         'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/ASL2.0',
+                         'META-INF/*.kotlin_module']
         }
     }
 }
@@ -81,7 +84,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    
+
     // Core library desugaring for Java 8+ APIs on older Android versions
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
@@ -93,17 +96,56 @@ dependencies {
 
     // Image loading
     implementation 'com.github.bumptech.glide:glide:4.16.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+    kapt 'com.github.bumptech.glide:compiler:4.16.0'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.8.0'
     testImplementation 'org.robolectric:robolectric:4.11.1'
-    
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
+}
+
+mavenPublishing {
+    coordinates(group.toString(), "seel-widget-sdk", rootProject.ext.version.toString())
+
+    pom {
+        name = "seel widget sdk"
+        description = 'Seel weidget SDK for Android'
+        url = 'https://github.com/kover-ai/seel-widget-sdk-android'
+        licenses {
+            license {
+                name = 'MIT License'
+                url = 'https://opensource.org/licenses/MIT'
+            }
+        }
+        developers {
+            developer {
+                name = 'Seel'
+            }
+        }
+        scm {
+            connection = 'scm:git:git://github.com/kover-ai/seel-widget-sdk-android'
+            developerConnection = 'scm:git:ssh://github.com/kover-ai/seel-widget-sdk-android.git'
+            url = 'https://github.com/kover-ai/seel-widget-sdk-android.git'
+        }
+    }
+}
+
+signing {
+    def signingKey = System.getenv("signing_secretKey")
+            ?: findProperty("signing_secretKey")
+
+    def signingPassword = System.getenv("signing_password")
+            ?: findProperty("signing_password")
+
+    if (signingKey != null && signingPassword != null) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications
+    }
 }
 
 // Copy AAR file to root directory for distribution
