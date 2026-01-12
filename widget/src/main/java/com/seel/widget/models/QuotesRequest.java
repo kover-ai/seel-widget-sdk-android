@@ -136,6 +136,9 @@ public class QuotesRequest {
         @SerializedName("image_urls")
         private List<String> imageURLs;
         
+        @SerializedName("brand_name")
+        private String brandName;
+        
         @SerializedName("shipping_origin")
         private ShippingOrigin shippingOrigin;
         
@@ -187,6 +190,9 @@ public class QuotesRequest {
         
         public List<String> getImageURLs() { return imageURLs; }
         public void setImageURLs(List<String> imageURLs) { this.imageURLs = imageURLs; }
+        
+        public String getBrandName() { return brandName; }
+        public void setBrandName(String brandName) { this.brandName = brandName; }
         
         public ShippingOrigin getShippingOrigin() { return shippingOrigin; }
         public void setShippingOrigin(ShippingOrigin shippingOrigin) { this.shippingOrigin = shippingOrigin; }

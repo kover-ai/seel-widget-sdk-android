@@ -9,7 +9,7 @@ ext {
     compileSdkVersion = 34
     minSdkVersion = 24
     targetSdkVersion = 34
-    version = '1.0.2'
+    version = '1.0.3'
 }
 
 tasks.register('clean', Delete) {

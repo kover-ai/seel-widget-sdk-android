@@ -134,6 +134,21 @@ public class SeelClient {
     }
     
     /**
+     * Get log base URL for events
+     * @return log domain per environment
+     */
+    @NonNull
+    public String getLogBaseURL() {
+        switch (environment) {
+            case DEVELOPMENT:
+                return "https://log-test.seel.com";
+            case PRODUCTION:
+            default:
+                return "https://log.seel.com";
+        }
+    }
+    
+    /**
      * Check if configured properly
      * @return true if properly configured
      */

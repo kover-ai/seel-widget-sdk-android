@@ -37,6 +37,7 @@ public class SeelApiClient {
     private static final ReentrantLock lock = new ReentrantLock();
     
     private SeelApiService apiService;
+    private SeelApiService logApiService;
     private Context context;
     private OkHttpClient okHttpClient;
     private boolean isInitialized = false;
@@ -160,8 +161,14 @@ public class SeelApiClient {
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
+            Retrofit logRetrofit = new Retrofit.Builder()
+                    .baseUrl(SeelClient.getInstance().getLogBaseURL() + "/")
+                    .client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
             
             apiService = retrofit.create(SeelApiService.class);
+            logApiService = logRetrofit.create(SeelApiService.class);
             isInitialized = true;
             
             Log.i(TAG, "Retrofit initialized successfully");
@@ -253,7 +260,7 @@ public class SeelApiClient {
         
         Log.d(TAG, "Creating events");
         
-        Call<EventsResponse> call = apiService.createEvents(eventsRequest);
+        Call<EventsResponse> call = logApiService.createEvents(eventsRequest);
         call.enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, retrofit2.Response<EventsResponse> response) {

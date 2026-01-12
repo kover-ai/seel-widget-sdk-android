@@ -3,6 +3,7 @@ package com.seel.widget.example;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -15,6 +16,7 @@ import android.graphics.Color;
 
 import com.google.gson.Gson;
 import com.seel.widget.SeelWidgetSDK;
+import com.seel.widget.core.Constants;
 import com.seel.widget.core.SeelEnvironment;
 import java.util.HashMap;
 import com.seel.widget.models.EventsRequest;
@@ -44,6 +46,7 @@ public class MainActivity extends Activity {
     private SeekBar optedValidTimeSeekBar;
     private TextView optedValidTimeValueText;
     private ProgressBar loadingIndicator;
+    private TextView localCacheText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,14 @@ public class MainActivity extends Activity {
         // Create buttons
         createButtons(mainLayout);
 
+        // Local cache display
+        localCacheText = new TextView(this);
+        localCacheText.setTextColor(Color.WHITE);
+        localCacheText.setTextSize(14);
+        localCacheText.setPadding(0, 20, 0, 20);
+        mainLayout.addView(localCacheText);
+        refreshLocalCacheDisplay();
+
         // Create loading indicator
         loadingIndicator = new ProgressBar(this);
         loadingIndicator.setVisibility(View.GONE);
@@ -84,6 +95,7 @@ public class MainActivity extends Activity {
             } else {
                 android.util.Log.d("SeelWidgetExample", "User opted out");
             }
+            refreshLocalCacheDisplay();
         });
 
         setContentView(mainLayout);
@@ -290,6 +302,7 @@ public class MainActivity extends Activity {
             public void onSuccess(com.seel.widget.models.QuotesResponse response) {
                 setLoading(false);
                 android.util.Log.d("SeelWidgetExample", "Setup quote successfully: " + response);
+                refreshLocalCacheDisplay();
             }
 
             @Override
@@ -328,6 +341,7 @@ public class MainActivity extends Activity {
             public void onSuccess(com.seel.widget.models.QuotesResponse response) {
                 setLoading(false);
                 android.util.Log.d("SeelWidgetExample", "Update quote successfully: " + response);
+                refreshLocalCacheDisplay();
             }
 
             @Override
@@ -354,6 +368,7 @@ public class MainActivity extends Activity {
             public void onSuccess(com.seel.widget.models.EventsResponse response) {
                 setLoading(false);
                 android.util.Log.d("SeelWidgetExample", "Event tracked successfully: " + response);
+                refreshLocalCacheDisplay();
             }
 
             @Override
@@ -366,6 +381,7 @@ public class MainActivity extends Activity {
 
     private void cleanOptedIn() {
         SeelWFPView.cleanLocalOpted(getApplicationContext());
+        refreshLocalCacheDisplay();
     }
 
     private void setLoading(boolean loading) {
@@ -393,6 +409,39 @@ public class MainActivity extends Activity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(TestDataHelper.optedValidTimeKey, optedValidTime);
         editor.apply();
+    }
+
+    private void refreshLocalCacheDisplay() {
+        if (localCacheText == null) {
+            return;
+        }
+
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.SEEL_SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        boolean hasOpted = sharedPreferences.contains(Constants.OPTED_VALUE_KEY);
+        Boolean optedValue = hasOpted ? sharedPreferences.getBoolean(Constants.OPTED_VALUE_KEY, false) : null;
+        String cartId = sharedPreferences.getString(Constants.CART_ID_KEY, "-");
+        long operationTime = sharedPreferences.getLong(Constants.OPTED_OPERATION_TIME_KEY, -1);
+
+        String updatedAt = operationTime > 0
+                ? DateFormat.format("yyyy-MM-dd HH:mm:ss", operationTime).toString()
+                : "-";
+
+        String expireAt = "-";
+        boolean expired = false;
+        if (operationTime > 0 && SeelWFPView.optedValidTime > 0) {
+            long expireMillis = operationTime + SeelWFPView.optedValidTime * 1000L;
+            expireAt = DateFormat.format("yyyy-MM-dd HH:mm:ss", expireMillis).toString();
+            expired = System.currentTimeMillis() > expireMillis;
+        }
+
+        String text = "Local cache: " + (hasOpted ? "present" : "empty") +
+                "\ncart_id: " + cartId +
+                "\nopted_in: " + (optedValue != null ? optedValue : "-") +
+                "\nupdated_at: " + updatedAt +
+                "\nexpire_at: " + expireAt +
+                (expired ? " (expired)" : "");
+
+        localCacheText.setText(text);
     }
 
     /**
@@ -441,6 +490,7 @@ public class MainActivity extends Activity {
                     "                \"https://example.com/image1\",\n" +
                     "                \"https://example.com/image2\"\n" +
                     "            ],\n" +
+                    "            \"brand_name\": \"poshmark\",\n" +
                     "            \"shipping_origin\": {\n" +
                     "                \"country\": \"US\"\n" +
                     "            }\n" +
@@ -465,6 +515,7 @@ public class MainActivity extends Activity {
                     "                \"https://example.com/image1\",\n" +
                     "                \"https://example.com/image2\"\n" +
                     "            ],\n" +
+                    "            \"brand_name\": \"poshmark\",\n" +
                     "            \"shipping_origin\": {\n" +
                     "                \"country\": \"US\"\n" +
                     "            }\n" +
