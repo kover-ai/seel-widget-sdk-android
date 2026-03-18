@@ -148,7 +148,7 @@ public class QuotesResponse implements Serializable {
         private String productTitle;
         
         @SerializedName("product_attributes")
-        private String productAttributes;
+        private Object productAttributes;
         
         @SerializedName("product_description")
         private String productDescription;
@@ -226,7 +226,7 @@ public class QuotesResponse implements Serializable {
         private String condition;
         
         @SerializedName("extra_info")
-        private String extraInfo;
+        private Object extraInfo;
         
         // Getters and Setters (simplified version, full getter/setter needed in actual project)
         public String getLineItemID() { return lineItemID; }
@@ -405,8 +405,14 @@ public class QuotesResponse implements Serializable {
         @SerializedName("opt_out_warning_text")
         private String optOutWarningText;
 
+        @SerializedName("widget_disclaimer")
+        private String widgetDisclaimer;
+
         @SerializedName("widget_title")
         private String widgetTitle;
+
+        @SerializedName("opted_out")
+        private Boolean optedOut;
         
         // Getters and Setters
         public Double getShippingFee() { return shippingFee; }
@@ -427,8 +433,14 @@ public class QuotesResponse implements Serializable {
         public String getOptOutWarningText() { return optOutWarningText; }
         public void setOptOutWarningText(String optOutWarningText) { this.optOutWarningText = optOutWarningText; }
 
+        public String getWidgetDisclaimer() { return widgetDisclaimer; }
+        public void setWidgetDisclaimer(String widgetDisclaimer) { this.widgetDisclaimer = widgetDisclaimer; }
+
         public String getWidgetTitle() { return widgetTitle; }
         public void setWidgetTitle(String widgetTitle) { this.widgetTitle = widgetTitle; }
+
+        public Boolean getOptedOut() { return optedOut; }
+        public void setOptedOut(Boolean optedOut) { this.optedOut = optedOut; }
     }
     
     /**
