@@ -37,130 +37,115 @@ dependencies {
 Initialize the SDK in your Application class or Activity:
 
 ```java
-import com.seel.widget.core.SeelWidgetSDK;
+import com.seel.widget.SeelWidgetSDK;
 import com.seel.widget.core.SeelEnvironment;
 
-// Configure SDK
 SeelWidgetSDK.getInstance().configure(
-    this, 
-    "your_api_key_here", 
+    this,
+    "your_api_key_here",
     SeelEnvironment.PRODUCTION
 );
 ```
 
-### 2. Create Quote Component
+### 2. Add WFP Widget
 
 ```java
 import com.seel.widget.ui.SeelWFPView;
 import com.seel.widget.models.QuotesRequest;
 
-// Create view
 SeelWFPView seelWFPView = new SeelWFPView(this);
 
-// Set callbacks
 seelWFPView.setOptedInCallback((optedIn, quote) -> {
     if (optedIn) {
-        // User selected protection
-        System.out.println("User opted in for price: " + quote.getPrice());
+        Log.d("Seel", "User opted in, price: " + quote.getPrice());
     } else {
-        // User declined protection
-        System.out.println("User opted out");
+        Log.d("Seel", "User opted out");
     }
 });
 
-// Create request
 QuotesRequest request = new QuotesRequest();
 request.setType("seel-wfp");
 request.setCartID("cart_123");
-// ... set other parameters
+// ... set other required fields
 
-// Setup data
-seelWFPView.setup(request, callback);
-```
-
-### 3. Set/Update Quote Information
-
-```java
-// Create quote information request
-QuotesRequest quotesRequest = new QuotesRequest();
-quotesRequest.setType("seel-wfp");
-quotesRequest.setCartID("your_cart_id");
-quotesRequest.setSessionID("your_session_id");
-quotesRequest.setMerchantID("your_merchant_id");
-quotesRequest.setDeviceID("your_device_id");
-quotesRequest.setDeviceCategory("mobile");
-quotesRequest.setDevicePlatform("android");
-quotesRequest.setIsDefaultOn(true);
-
-// Add line items
-List<QuotesRequest.LineItem> lineItems = new ArrayList<>();
-QuotesRequest.LineItem lineItem = new QuotesRequest.LineItem();
-lineItem.setLineItemID("item_1");
-lineItem.setProductID("product_123");
-lineItem.setProductTitle("Samsung Galaxy S24");
-lineItem.setPrice(999.0);
-lineItem.setQuantity(1);
-lineItem.setCurrency("USD");
-lineItems.add(lineItem);
-quotesRequest.setLineItems(lineItems);
-
-// Set shipping address
-QuotesRequest.ShippingAddress shippingAddress = new QuotesRequest.ShippingAddress();
-shippingAddress.setAddress1("123 Main St");
-shippingAddress.setCity("San Francisco");
-shippingAddress.setState("CA");
-shippingAddress.setZipcode("94102");
-shippingAddress.setCountry("US");
-quotesRequest.setShippingAddress(shippingAddress);
-
-// Set customer info
-QuotesRequest.Customer customer = new QuotesRequest.Customer();
-customer.setCustomerID("customer_123");
-customer.setFirstName("John");
-customer.setLastName("Doe");
-customer.setEmail("john@example.com");
-customer.setPhone("+1234567890");
-quotesRequest.setCustomer(customer);
-
-// Initial setup of quote component
-seelWFPView.setup(quotesRequest, new SeelApiCallback() {
+seelWFPView.setup(request, new SeelApiCallback<QuotesResponse>() {
     @Override
-    public void onSuccess(QuotesResponse response) {
-        System.out.println("Setup successful: " + response);
-    }
-    
+    public void onSuccess(QuotesResponse response) { }
+
     @Override
-    public void onError(NetworkError error) {
-        System.out.println("Setup failed: " + error);
-    }
+    public void onError(NetworkError error, String message) { }
 });
 ```
 
-### 4. Event Tracking
+### 3. Add PDP Banner (Optional)
 
-Send events to track user behavior:
+```java
+import com.seel.widget.ui.SeelPDPBannerView;
+
+SeelPDPBannerView pdpBanner = new SeelPDPBannerView(this);
+
+// With custom style
+SeelPDPBannerView.PDPBannerStyle style = new SeelPDPBannerView.PDPBannerStyle();
+style.paddingTop = dp(12);
+style.paddingLeft = dp(12);
+style.paddingBottom = dp(12);
+style.paddingRight = dp(12);
+style.cornerRadius = dp(6);
+
+pdpBanner.setup("ebth-wfp", style);
+```
+
+### 4. Brand-Specific Configuration
+
+The SDK supports brand-specific UI layouts via the Provider + Factory pattern. The layout is automatically selected based on the `type` field in `QuotesResponse`:
+
+| Brand Type      | Widget Style | Toggle Style | Info Modal Style       |
+|-----------------|-------------|--------------|------------------------|
+| `ebth-wfp`      | EBTH        | Checkbox     | Bottom sheet with hero |
+| `poshmark-wfp`  | Default     | Switch       | Standard info page     |
+| `seel-wfp`      | Default     | Switch       | Standard info page     |
+
+To configure the toggle style before loading data:
+
+```java
+import com.seel.widget.ui.layout.ToggleStyle;
+
+// For EBTH brand
+SeelWFPView.toggleStyle = ToggleStyle.CHECKBOX_STYLE;
+
+// For other brands (default)
+SeelWFPView.toggleStyle = ToggleStyle.SWITCH_STYLE;
+```
+
+### 5. Update Quote When Cart Changes
+
+```java
+seelWFPView.updateWidgetWhenChanged(updatedRequest, new SeelApiCallback<QuotesResponse>() {
+    @Override
+    public void onSuccess(QuotesResponse response) { }
+
+    @Override
+    public void onError(NetworkError error, String message) { }
+});
+```
+
+### 6. Event Tracking
 
 ```java
 import com.seel.widget.models.EventsRequest;
 
-// Create event request
-EventsRequest eventRequest = new EventsRequest();
-eventRequest.setSessionID("your_session_id");
-eventRequest.setCustomerID("customer_123");
-eventRequest.setEventSource("android_app");
-eventRequest.setEventType("product_page_enter");
+EventsRequest event = new EventsRequest();
+event.setSessionID("your_session_id");
+event.setCustomerID("customer_123");
+event.setEventSource("android");
+event.setEventType("product_page_enter");
 
-// Send event
-SeelWidgetSDK.getInstance().createEvents(eventRequest, new SeelApiCallback() {
+SeelWidgetSDK.getInstance().createEvents(event, new SeelApiCallback<EventsResponse>() {
     @Override
-    public void onSuccess(EventsResponse response) {
-        System.out.println("Event sent successfully: " + response);
-    }
-    
+    public void onSuccess(EventsResponse response) { }
+
     @Override
-    public void onError(NetworkError error) {
-        System.out.println("Event sending failed: " + error);
-    }
+    public void onError(NetworkError error, String message) { }
 });
 ```
 
@@ -168,80 +153,123 @@ SeelWidgetSDK.getInstance().createEvents(eventRequest, new SeelApiCallback() {
 
 ### SeelWidgetSDK
 
-The main SDK client class responsible for configuration and network requests.
-
-#### Methods
-
-- `configure(Context context, String apiKey)` - Configure with default production environment
-- `configure(Context context, String apiKey, SeelEnvironment environment)` - Full configuration
-- `getApiKey()` - Get current API key
-- `getEnvironment()` - Get current environment
-- `isConfigured()` - Check if configured
+| Method | Description |
+|--------|-------------|
+| `configure(Context, String apiKey, SeelEnvironment)` | Initialize SDK |
+| `getApiKey()` | Get current API key |
+| `getEnvironment()` | Get current environment |
+| `isConfigured()` | Check if SDK is configured |
+| `createEvents(EventsRequest, SeelApiCallback)` | Send tracking event |
 
 ### SeelWFPView
 
-The main user interface component that displays protection options.
+| Method | Description |
+|--------|-------------|
+| `setup(QuotesRequest, SeelApiCallback)` | Initial setup with quote request |
+| `updateWidgetWhenChanged(QuotesRequest, SeelApiCallback)` | Update when cart changes |
+| `setToggleState(boolean)` | Set toggle on/off state |
+| `setOptedInCallback(WFPOptedInCallback)` | Set opt-in/out callback |
+| `cleanLocalOpted(Context)` | Clear local opted-in cache (static) |
 
-#### Methods
+### SeelPDPBannerView
 
-- `setup(QuotesRequest request, SeelApiCallback callback)` - Set data and get quote
-- `turnOn(boolean on)` - Set switch state
-- `setOptedInCallback(WFPOptedInCallback callback)` - Set selection callback
-- `setOpenUrlCallback(WFPOpenUrlCallback callback)` - Set URL opening callback
-
-#### Callbacks
-
-```java
-// User selection callback
-public interface WFPOptedInCallback {
-    void onOptedIn(boolean optedIn, QuotesResponse quote);
-}
-
-// URL opening callback
-public interface WFPOpenUrlCallback {
-    void onOpenUrl(String url);
-}
-```
+| Method | Description |
+|--------|-------------|
+| `setup(String type)` | Setup with default style |
+| `setup(String type, PDPBannerStyle style)` | Setup with custom style |
 
 ### Data Models
 
 #### QuotesRequest
 
-Quote request model containing the following main fields:
-
-- `type` - Request type
-- `cartID` - Cart ID
-- `sessionID` - Session ID
-- `merchantID` - Merchant ID
-- `lineItems` - Product list
-- `shippingAddress` - Shipping address
-- `customer` - Customer information
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | String | Yes | Brand type (e.g. `"ebth-wfp"`) |
+| `cartID` | String | Yes | Cart identifier |
+| `sessionID` | String | Yes | Session identifier |
+| `merchantID` | String | Yes | Merchant identifier |
+| `deviceID` | String | No | Device identifier |
+| `deviceCategory` | String | No | `"mobile"` / `"desktop"` |
+| `devicePlatform` | String | No | `"android"` |
+| `isDefaultOn` | Boolean | No | Default toggle state |
+| `lineItems` | List | Yes | Product line items |
+| `shippingAddress` | Object | No | Shipping address |
+| `customer` | Object | No | Customer information |
+| `extraInfo` | Map | No | Additional metadata |
 
 #### QuotesResponse
 
-Quote response model containing the following main fields:
-
-- `quoteID` - Quote ID
-- `price` - Protection price
-- `status` - Quote status (ACCEPTED/REJECTED)
-- `isDefaultOn` - Whether default enabled
-- `extraInfo` - Additional information
+| Field | Type | Description |
+|-------|------|-------------|
+| `quoteID` | String | Quote identifier |
+| `price` | Double | Protection price |
+| `status` | String | `"accepted"` / `"rejected"` |
+| `type` | String | Brand type (drives UI layout) |
+| `isDefaultOn` | Boolean | Server-suggested default state |
+| `extraInfo` | Object | Display texts, URLs, coverage details |
 
 ## Environment Configuration
 
-The SDK supports two environments:
-
-- `SeelEnvironment.DEVELOPMENT` - Development environment
-- `SeelEnvironment.PRODUCTION` - Production environment
+```java
+SeelEnvironment.DEVELOPMENT  // Development / staging
+SeelEnvironment.PRODUCTION   // Production
+```
 
 ## Permissions
-
-The SDK requires the following permissions:
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
+
+## Project Structure
+
+```
+seel-widget-sdk-android/
+├── widget/                          # SDK library module
+│   ├── src/main/java/com/seel/widget/
+│   │   ├── core/                    # SDK configuration & constants
+│   │   ├── models/                  # QuotesRequest, QuotesResponse, EventsRequest
+│   │   ├── network/                 # Retrofit API client & error handling
+│   │   ├── ui/                      # UI components
+│   │   │   ├── SeelWFPView.java     # Main widget view
+│   │   │   ├── SeelWFPInfoActivity  # Info modal activity
+│   │   │   ├── SeelPDPBannerView    # PDP banner component
+│   │   │   ├── SeelCheckbox.java    # Custom checkbox component
+│   │   │   ├── SeelTooltipView.java # Disabled-state tooltip
+│   │   │   └── layout/             # Brand-specific layout system
+│   │   │       ├── *LayoutProvider  # Layout interfaces
+│   │   │       ├── *LayoutFactory   # Factory classes
+│   │   │       ├── Default*Layout   # Default brand implementations
+│   │   │       └── EBTH*Layout      # EBTH brand implementations
+│   │   └── utils/                   # Utility classes
+│   └── src/main/res/
+│       ├── drawable/                # Vector drawables
+│       └── mipmap/                  # Image assets (PNG)
+├── example/                         # Example application
+│   └── src/main/java/.../MainActivity.java
+└── build.gradle
+```
+
+## Architecture: Brand Layout System
+
+The SDK uses a **Provider + Factory** pattern to support brand-specific UIs:
+
+```
+QuotesResponse.type
+        │
+        ▼
+  LayoutFactory.provider(type)
+        │
+        ├── "ebth-wfp"  → EBTHWFPWidgetLayout
+        ├── "poshmark-wfp" → DefaultWFPWidgetLayout
+        └── (default)    → DefaultWFPWidgetLayout
+```
+
+Each brand can customize three UI surfaces independently:
+- **Widget** (`WFPWidgetLayoutProvider`) — the inline cart widget
+- **Info Modal** (`WFPInfoLayoutProvider`) — the detail/opt-in modal
+- **PDP Banner** (`PDPBannerLayoutProvider`) — the product page banner
 
 ## Dependencies
 
@@ -252,74 +280,31 @@ The SDK requires the following permissions:
 - AndroidX Core 1.12.0
 - Material Design Components 1.11.0
 
-## Example Usage
+## Example
 
-See the `example` module for a complete implementation example. The example demonstrates:
+See the `example` module for a complete implementation. The example demonstrates:
 
-1. SDK initialization
-2. Creating a sample request
-3. Handling user interactions
-4. Managing callbacks
+- SDK initialization and configuration
+- EBTH brand: simplified debug controls (WFP on/off, rejected, free return)
+- Default brand: full test controls (error toggle, accepted toggle, product count, etc.)
+- PDP Banner with custom padding and corner radius
+- Opted-in state caching and display
 
-## Project Structure
+## Changelog
 
-```
-seel-widget-sdk-android/
-├── widget/                    # SDK library module
-│   ├── src/main/java/com/seel/widget/
-│   │   ├── core/              # Core functionality
-│   │   ├── models/            # Data models
-│   │   ├── network/           # Network layer
-│   │   └── ui/                # UI components
-│   └── build.gradle           # Library configuration
-├── example/                   # Example application
-│   ├── src/main/java/com/seel/widget/example/
-│   │   └── MainActivity.java  # Example implementation
-│   └── build.gradle           # Example configuration
-└── README_EN.md              # This file
-```
+### Version 1.0.3
+- Add brand-specific layout system (Provider + Factory pattern)
+- Add EBTH brand layouts (widget, info modal, PDP banner)
+- Add SeelCheckbox, SeelTooltipView, SeelPDPBannerView components
+- Refactor SeelWFPView and SeelWFPInfoActivity to use layout providers
+- Align required fields and UI with iOS SDK
+- Add image assets to mipmap/
 
-## Core Components
+### Version 1.0.1
+- Update configuration API
 
-### 1. Core Functionality (core/)
-- **SeelWidgetSDK**: Main SDK for configuration
-- **SeelEnvironment**: Environment enumeration (development/production)
-- **Constants**: Constant definitions
-
-### 2. Data Models (models/)
-- **QuotesRequest**: Quote request model with product, customer, address information
-- **QuotesResponse**: Quote response model with price, status, protection details
-- **QuoteStatus**: Quote status enumeration (accepted/rejected)
-
-### 3. Network Layer (network/)
-- **SeelApiService**: Retrofit API service interface
-- **SeelApiClient**: API client handling network requests and responses
-- **NetworkError**: Network error type enumeration
-
-### 4. UI Components (ui/)
-- **SeelWFPView**: Main user interface component
-- **SeelWFPTitleView**: Title view displaying price and brand information
-- **SeelWFPInfoActivity**: Information page activity
-- **CoverageDetailsView**: Protection details view
-- **CoverageTipsView**: Protection tips view
-- **CoverageInfoFooter**: Protection information footer
-- **LineView**: Reusable line view component
-
-## Key Features
-
-1. **Android Compatibility**: Provides consistent API interface and functionality as android platforms
-2. **Modular Design**: Clear code organization structure
-3. **Network Abstraction**: Uses Retrofit for network requests
-4. **Component-based UI**: Reusable UI components
-5. **Configuration Management**: Multi-environment configuration support
-6. **Error Handling**: Comprehensive error handling mechanism
-
-## Integration Steps
-
-1. Initialize SeelWidgetSDK in your Application class
-2. Create SeelWFPView and set callbacks
-3. Build QuotesRequest and call setup method
-4. Handle user selection and URL opening callbacks
+### Version 1.0.0
+- Initial release
 
 ## License
 
@@ -328,15 +313,3 @@ Please refer to the LICENSE file for detailed information.
 ## Support
 
 For questions or suggestions, please contact the Seel technical support team.
-
-## Changelog
-
-### Version 1.0.0
-- Initial release
-- Full Android compatibility
-- Complete UI component set
-- Network layer implementation
-- Example application included
-
-### Version 1.0.1
-- Update configuration API

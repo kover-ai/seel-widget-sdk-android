@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Quote response model
@@ -62,6 +63,9 @@ public class QuotesResponse implements Serializable {
     
     @SerializedName("eligible_items")
     private List<EligibleItem> eligibleItems;
+    
+    @SerializedName("coverages")
+    private List<Coverage> coverages;
     
     @SerializedName("shipping_address")
     private ShippingAddress shippingAddress;
@@ -124,6 +128,9 @@ public class QuotesResponse implements Serializable {
     
     public List<EligibleItem> getEligibleItems() { return eligibleItems; }
     public void setEligibleItems(List<EligibleItem> eligibleItems) { this.eligibleItems = eligibleItems; }
+    
+    public List<Coverage> getCoverages() { return coverages; }
+    public void setCoverages(List<Coverage> coverages) { this.coverages = coverages; }
     
     public ShippingAddress getShippingAddress() { return shippingAddress; }
     public void setShippingAddress(ShippingAddress shippingAddress) { this.shippingAddress = shippingAddress; }
@@ -291,12 +298,36 @@ public class QuotesResponse implements Serializable {
         @SerializedName("description")
         private String description;
         
+        @SerializedName("price")
+        private Double price;
+        
+        @SerializedName("sales_tax")
+        private Double salesTax;
+        
+        @SerializedName("eligible_items")
+        private List<EligibleItem> eligibleItems;
+        
+        @SerializedName("extra_info")
+        private Object extraInfo;
+        
         // Getters and Setters
         public String getCoverageType() { return coverageType; }
         public void setCoverageType(String coverageType) { this.coverageType = coverageType; }
         
         public String getDescription() { return description; }
         public void setDescription(String description) { this.description = description; }
+        
+        public Double getPrice() { return price; }
+        public void setPrice(Double price) { this.price = price; }
+        
+        public Double getSalesTax() { return salesTax; }
+        public void setSalesTax(Double salesTax) { this.salesTax = salesTax; }
+        
+        public List<EligibleItem> getEligibleItems() { return eligibleItems; }
+        public void setEligibleItems(List<EligibleItem> eligibleItems) { this.eligibleItems = eligibleItems; }
+        
+        public Object getExtraInfo() { return extraInfo; }
+        public void setExtraInfo(Object extraInfo) { this.extraInfo = extraInfo; }
     }
     
     /**
@@ -360,8 +391,9 @@ public class QuotesResponse implements Serializable {
         @SerializedName("phone")
         private String phone;
         
+        /** Extra information about the customer (open structure) */
         @SerializedName("extra_info")
-        private String extraInfo;
+        private Object extraInfo;
         
         // Getters and Setters
         public String getCustomerID() { return customerID; }
@@ -379,8 +411,8 @@ public class QuotesResponse implements Serializable {
         public String getPhone() { return phone; }
         public void setPhone(String phone) { this.phone = phone; }
         
-        public String getExtraInfo() { return extraInfo; }
-        public void setExtraInfo(String extraInfo) { this.extraInfo = extraInfo; }
+        public Object getExtraInfo() { return extraInfo; }
+        public void setExtraInfo(Object extraInfo) { this.extraInfo = extraInfo; }
     }
     
     /**
