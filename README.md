@@ -117,7 +117,22 @@ SeelWFPView.toggleStyle = ToggleStyle.CHECKBOX_STYLE;
 SeelWFPView.toggleStyle = ToggleStyle.SWITCH_STYLE;
 ```
 
-### 5. Update Quote When Cart Changes
+### 5. Widget Style Customization
+
+```java
+// Background colors
+seelWFPView.setNormalBackgroundColor(0xFFF5F5F5);
+seelWFPView.setSelectedBackgroundColor(0xFFE8E8E8);
+seelWFPView.setDisabledBackgroundColor(0xFFF0EFEF);
+
+// Corner radius (in pixels, use dp() helper for density-independent values)
+seelWFPView.setCornerRadius(dp(8));
+
+// Show or hide disclaimer text
+seelWFPView.setShowDisclaimer(false);
+```
+
+### 6. Update Quote When Cart Changes
 
 ```java
 seelWFPView.updateWidgetWhenChanged(updatedRequest, new SeelApiCallback<QuotesResponse>() {
@@ -129,7 +144,7 @@ seelWFPView.updateWidgetWhenChanged(updatedRequest, new SeelApiCallback<QuotesRe
 });
 ```
 
-### 6. Event Tracking
+### 7. Event Tracking
 
 ```java
 import com.seel.widget.models.EventsRequest;
@@ -170,6 +185,11 @@ SeelWidgetSDK.getInstance().createEvents(event, new SeelApiCallback<EventsRespon
 | `setToggleState(boolean)` | Set toggle on/off state |
 | `setOptedInCallback(WFPOptedInCallback)` | Set opt-in/out callback |
 | `cleanLocalOpted(Context)` | Clear local opted-in cache (static) |
+| `setNormalBackgroundColor(int)` | Background color for default state |
+| `setSelectedBackgroundColor(int)` | Background color when opted in |
+| `setDisabledBackgroundColor(int)` | Background color when rejected |
+| `setCornerRadius(float)` | Corner radius in pixels |
+| `setShowDisclaimer(boolean)` | Show/hide disclaimer text |
 
 ### SeelPDPBannerView
 
