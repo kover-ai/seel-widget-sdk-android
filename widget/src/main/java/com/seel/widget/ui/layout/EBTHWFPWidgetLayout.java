@@ -16,12 +16,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.seel.widget.R;
+import com.seel.widget.core.FormatMoney;
 import com.seel.widget.models.QuotesResponse;
 import com.seel.widget.ui.LoadingAnimationView;
 import com.seel.widget.utils.DpPxUtils;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * EBTH-specific WFP widget layout.
@@ -251,7 +251,8 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
             String title = quoteResponse.getExtraInfo() != null
                     ? quoteResponse.getExtraInfo().getWidgetTitle() : "";
             Double price = quoteResponse.getPrice();
-            String priceText = price != null ? String.format(Locale.US, " for $%.2f", price) : "";
+            String priceText = price != null
+                    ? " for " + FormatMoney.formatMoney(price, quoteResponse.getCurrency()) : "";
             String full = title + priceText;
 
             SpannableString spannable = new SpannableString(full);

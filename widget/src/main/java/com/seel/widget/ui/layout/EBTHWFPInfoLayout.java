@@ -22,7 +22,6 @@ import com.seel.widget.models.QuotesResponse;
 import com.seel.widget.utils.DpPxUtils;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * EBTH-specific WFP info modal layout.
@@ -112,7 +111,8 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         TextView headerSubtitleLabel = new TextView(activity);
         Double price = quoteResponse != null ? quoteResponse.getPrice() : null;
         if (price != null) {
-            headerSubtitleLabel.setText(String.format(Locale.US, activity.getString(R.string.seel_ebth_header_subtitle), price));
+            headerSubtitleLabel.setText(String.format(java.util.Locale.US,
+                    "Only $%.2f for Complete Peace of Mind", price));
         }
         headerSubtitleLabel.setTextSize(16);
         headerSubtitleLabel.setTypeface(null, Typeface.NORMAL);

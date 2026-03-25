@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.seel.widget.R;
+import com.seel.widget.core.FormatMoney;
 import com.seel.widget.utils.DpPxUtils;
 
 /**
@@ -31,6 +32,7 @@ public class SeelWFPTitleView extends LinearLayout {
     // Data
     private String title;
     private Double price;
+    private String currency;
     private Boolean loading;
     private boolean showInfo = false;
     private boolean showPowered = false;
@@ -220,7 +222,7 @@ public class SeelWFPTitleView extends LinearLayout {
                 priceLabel.setText(R.string.seel_price_prefix);
             } else  {
                 animationView.stopAnimating();
-                priceLabel.setText(String.format(java.util.Locale.US, getContext().getString(R.string.seel_price_format), price));
+                priceLabel.setText(" for " + FormatMoney.formatMoney(price, currency));
             }
             priceLabel.setVisibility(VISIBLE);
         } else {
@@ -240,6 +242,8 @@ public class SeelWFPTitleView extends LinearLayout {
     public void setTitle(String title) { this.title = title; }
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
     public Boolean getLoading() { return loading; }
     public void setLoading(Boolean loading) { this.loading = loading; }
     

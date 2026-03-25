@@ -110,6 +110,7 @@ public class DefaultWFPWidgetLayout implements WFPWidgetLayoutProvider {
         titleView.setTitle(quoteResponse.getExtraInfo() != null
                 ? quoteResponse.getExtraInfo().getWidgetTitle() : null);
         titleView.setPrice(!isRejected ? quoteResponse.getPrice() : null);
+        titleView.setCurrency(quoteResponse.getCurrency());
         titleView.setShowInfo(!isRejected);
         titleView.setLoading(data.isLoading());
         titleView.updateViews();
