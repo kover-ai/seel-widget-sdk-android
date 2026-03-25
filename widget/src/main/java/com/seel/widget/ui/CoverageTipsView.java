@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.seel.widget.R;
 import com.seel.widget.utils.DpPxUtils;
 
 /**
@@ -43,27 +44,27 @@ public class CoverageTipsView extends LinearLayout {
     private void createViews() {
         // Create title
         titleText = new TextView(getContext());
-        titleText.setText("Easy Resolution");
+        titleText.setText(R.string.seel_easy_resolution);
         titleText.setTextSize(16);
         titleText.setTextColor(0xFF1E2022);
         titleText.setTypeface(null, android.graphics.Typeface.BOLD);
         
         // Create subtitle
         subtitleText = new TextView(getContext());
-        subtitleText.setText("Resolve your issues with just a few clicks");
+        subtitleText.setText(R.string.seel_easy_resolution_detail);
         subtitleText.setTextSize(14);
         subtitleText.setTextColor(0xFF5C5F62);
         
         // Create description
         descriptionText = new TextView(getContext());
-        descriptionText.setText("Complete Peace of Mind");
+        descriptionText.setText(R.string.seel_complete_peace_of_mind);
         descriptionText.setTextSize(16);
         descriptionText.setTextColor(0xFF1E2022);
         descriptionText.setTypeface(null, android.graphics.Typeface.BOLD);
         
         // Create benefits list
         benefitsText = new TextView(getContext());
-        benefitsText.setText("• Zero-risk on your order with our protection\n• Get your refund promptly");
+        benefitsText.setText(R.string.seel_benefits_list);
         benefitsText.setTextSize(14);
         benefitsText.setTextColor(0xFF5C5F62);
 

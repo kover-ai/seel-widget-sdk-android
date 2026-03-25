@@ -9,7 +9,7 @@ import android.util.Log;
 public class SeelLogger {
     
     private static final String LOG_PREFIX = "[SeelWidget] ";
-    private static boolean isDebugEnabled = true;
+    private static boolean isDebugEnabled = false;
     private static boolean isVerboseEnabled = false;
     
     /**

@@ -81,7 +81,7 @@ public class SeelWebViewController extends AppCompatActivity {
         // Create navigation bar
         navigationBar = new SeelNavigationBar(this);
         navigationBar.setId(View.generateViewId());
-        navigationBar.setTitle("Loading...");
+        navigationBar.setTitle(getString(R.string.seel_loading));
         navigationBar.setRightButtonVisible(true);
         navigationBar.setBackButtonVisible(false);
         navigationBar.setBackButtonClickListener(() -> backButtonTapped());
@@ -231,7 +231,7 @@ public class SeelWebViewController extends AppCompatActivity {
             loadingIndicator.setVisibility(View.VISIBLE);
             progressBar.setProgress(0);
             progressBar.setVisibility(View.VISIBLE);
-            navigationBar.setTitle("Loading...");
+            navigationBar.setTitle(getString(R.string.seel_loading));
         }
         
         @Override
@@ -255,7 +255,7 @@ public class SeelWebViewController extends AppCompatActivity {
             super.onReceivedError(view, errorCode, description, failingUrl);
             loadingIndicator.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
-            android.util.Log.e("SeelWebViewController", "WebView failed to load: " + description);
+            com.seel.widget.core.SeelLogger.debug("SeelWebViewController", "WebView failed to load: %s", description);
         }
     }
     

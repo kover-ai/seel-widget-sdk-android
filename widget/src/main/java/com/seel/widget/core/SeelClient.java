@@ -70,7 +70,8 @@ public class SeelClient {
         this.environment = environment != null ? environment : SeelEnvironment.PRODUCTION;
         this.baseURL = baseURL;
         this.isConfigured = true;
-        
+
+        SeelLogger.setDebugEnabled(this.environment == SeelEnvironment.DEVELOPMENT);
         SeelLogger.info(TAG, "SeelClient configured for environment: %s", this.environment);
         
         // Save configuration to SharedPreferences
@@ -175,7 +176,7 @@ public class SeelClient {
         }
         
         String url = base + "/" + cleanEndpoint;
-        Log.d(TAG, "Built URL: " + url);
+        SeelLogger.debug(TAG, "Built URL: %s", url);
         return url;
     }
     

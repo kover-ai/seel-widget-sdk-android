@@ -47,7 +47,7 @@ public class DefaultWFPInfoLayout implements WFPInfoLayoutProvider {
         navigationTitle.setTypeface(null, Typeface.BOLD);
 
         TextView closeButton = new TextView(activity);
-        closeButton.setText("Close");
+        closeButton.setText(R.string.seel_close);
         closeButton.setTextColor(0xFF000000);
         closeButton.setTextSize(17);
         closeButton.setOnClickListener(v -> actions.getOnClose().run());
@@ -80,8 +80,9 @@ public class DefaultWFPInfoLayout implements WFPInfoLayoutProvider {
         }
 
         TextView seelLabel = new TextView(activity);
-        SpannableString spannableString = new SpannableString("What's Covered by Seel");
-        int seelStart = "What's Covered by ".length();
+        String coveredText = activity.getString(R.string.seel_whats_covered_by_seel);
+        SpannableString spannableString = new SpannableString(coveredText);
+        int seelStart = coveredText.lastIndexOf("Seel");
         spannableString.setSpan(new ForegroundColorSpan(0xFF2121C4),
                 seelStart, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         seelLabel.setText(spannableString);

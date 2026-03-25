@@ -14,7 +14,7 @@ Add the following to your `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation 'com.seel.widgetsdk:seel-widget-sdk:1.0.3'
+    implementation 'com.seel.widgetsdk:seel-widget-sdk:1.0.16'
 }
 ```
 

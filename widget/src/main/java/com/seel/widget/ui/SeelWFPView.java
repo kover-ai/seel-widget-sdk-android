@@ -2,8 +2,9 @@ package com.seel.widget.ui;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -50,6 +51,7 @@ public class SeelWFPView extends LinearLayout {
     private boolean toggleIsOn = true;
     private WFPWidgetLayoutProvider layoutProvider;
     private int latestRequestToken = 0;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public SeelWFPView(Context context) {
         super(context);
@@ -135,9 +137,14 @@ public class SeelWFPView extends LinearLayout {
     private void displayInfo() {
         if (quoteResponse == null) return;
 
-        android.content.Intent intent = new android.content.Intent(getContext(), SeelWFPInfoActivity.class);
+        Context ctx = getContext();
+        android.content.Intent intent = new android.content.Intent(ctx, SeelWFPInfoActivity.class);
         intent.putExtra("quote_response", quoteResponse);
         intent.putExtra("brand_type", quoteResponse.getType());
+
+        if (!(ctx instanceof android.app.Activity)) {
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
 
         SeelWFPInfoActivity.setStaticCallbacks(
                 () -> {
@@ -150,17 +157,17 @@ public class SeelWFPView extends LinearLayout {
                 },
                 () -> {
                     if (quoteResponse.getExtraInfo() != null && quoteResponse.getExtraInfo().getPrivacyPolicyURL() != null) {
-                        SeelWebViewController.show(getContext(), quoteResponse.getExtraInfo().getPrivacyPolicyURL());
+                        SeelWebViewController.show(ctx, quoteResponse.getExtraInfo().getPrivacyPolicyURL());
                     }
                 },
                 () -> {
                     if (quoteResponse.getExtraInfo() != null && quoteResponse.getExtraInfo().getTermsURL() != null) {
-                        SeelWebViewController.show(getContext(), quoteResponse.getExtraInfo().getTermsURL());
+                        SeelWebViewController.show(ctx, quoteResponse.getExtraInfo().getTermsURL());
                     }
                 }
         );
 
-        getContext().startActivity(intent);
+        ctx.startActivity(intent);
     }
 
     private void showDisabledTooltip() {
@@ -182,7 +189,7 @@ public class SeelWFPView extends LinearLayout {
         SeelApiClient.getInstance(getContext()).getQuotes(quote, new SeelApiCallback<>() {
             @Override
             public void onSuccess(QuotesResponse response) {
-                ((Activity) getContext()).runOnUiThread(() -> {
+                mainHandler.post(() -> {
                     if (requestToken != latestRequestToken) {
                         sdkDebugLog("ignore stale quote response => token: " + requestToken + ", latest: " + latestRequestToken);
                         if (callback != null) callback.onSuccess(response);
@@ -212,7 +219,7 @@ public class SeelWFPView extends LinearLayout {
 
             @Override
             public void onError(NetworkError error, String message) {
-                ((Activity) getContext()).runOnUiThread(() -> {
+                mainHandler.post(() -> {
                     if (requestToken != latestRequestToken) {
                         if (callback != null) callback.onError(error, message);
                         return;
@@ -223,8 +230,6 @@ public class SeelWFPView extends LinearLayout {
                     quoteResponse = null;
                     refreshLayout();
                     optedChanged(false);
-
-                    android.util.Log.e("SeelWFPView", "SeelWFPView_Get quote error: " + message);
                     if (callback != null) callback.onError(error, message);
                 });
             }

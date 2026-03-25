@@ -91,7 +91,7 @@ public class SeelNavigationBar extends RelativeLayout {
         
         // Create title label
         titleLabel = new TextView(getContext());
-        titleLabel.setText("What's Covered by Seel");
+        titleLabel.setText(R.string.seel_whats_covered_by_seel);
         titleLabel.setTextSize(17);
         titleLabel.setTextColor(getResources().getColor(R.color.seel_nav_title));
         titleLabel.setGravity(android.view.Gravity.CENTER);

@@ -39,7 +39,7 @@ public class CoverageDetailsView extends LinearLayout {
         
         // Create title row
         titleLine = new TextView(getContext());
-        titleLine.setText("Get a Full Refund, No Questions Asked");
+        titleLine.setText(R.string.seel_coverage_title);
         titleLine.setTextColor(0xFFFFFFFF); // White text
         titleLine.setTextSize(16);
         titleLine.setTypeface(null, android.graphics.Typeface.BOLD);

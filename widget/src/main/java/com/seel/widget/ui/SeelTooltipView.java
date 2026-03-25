@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.seel.widget.R;
 import com.seel.widget.models.QuotesResponse;
 import com.seel.widget.utils.DpPxUtils;
 
@@ -81,7 +82,7 @@ public class SeelTooltipView extends FrameLayout {
         SeelTooltipView tooltip = new SeelTooltipView(context);
         currentTooltip = tooltip;
         tooltip.setAlpha(0f);
-        tooltip.contentLabel.setText(buildTooltipText());
+        tooltip.contentLabel.setText(buildTooltipText(context));
 
         decorView.addView(tooltip, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -95,21 +96,21 @@ public class SeelTooltipView extends FrameLayout {
         }, 8000);
     }
 
-    private static CharSequence buildTooltipText() {
-        String[] reasons = {
-                "Shipping destination not supported",
-                "Checkout currency not accepted",
-                "Order value exceeds our coverage limit",
-                "Item(s) not eligible for this service",
-                "Our system has flagged this order as ineligible"
+    private static CharSequence buildTooltipText(Context context) {
+        int[] reasonIds = {
+                R.string.seel_tooltip_reason_shipping,
+                R.string.seel_tooltip_reason_currency,
+                R.string.seel_tooltip_reason_value,
+                R.string.seel_tooltip_reason_item,
+                R.string.seel_tooltip_reason_flagged
         };
 
         StringBuilder sb = new StringBuilder();
-        sb.append("We're unable to offer Worry-Free Purchase\u00AE Protection for this order. This could be due to one or more of the following reasons:\n\n");
-        for (String reason : reasons) {
-            sb.append("  \u2022  ").append(reason).append("\n");
+        sb.append(context.getString(R.string.seel_tooltip_intro));
+        for (int id : reasonIds) {
+            sb.append("  \u2022  ").append(context.getString(id)).append("\n");
         }
-        sb.append("\nIf you have any questions, please contact our customer support team for assistance.");
+        sb.append(context.getString(R.string.seel_tooltip_outro));
         return sb.toString();
     }
 }

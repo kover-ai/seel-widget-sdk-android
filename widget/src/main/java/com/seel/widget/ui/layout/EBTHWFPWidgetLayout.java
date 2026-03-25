@@ -311,6 +311,7 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
             checkboxImage.setImageResource(R.mipmap.ebth_checkbox_normal);
             checkboxButton.setEnabled(true);
         }
-        checkboxButton.setContentDescription(isOn ? "Selected" : "Unselected");
+        checkboxButton.setContentDescription(
+                checkboxButton.getContext().getString(isOn ? R.string.seel_a11y_selected : R.string.seel_a11y_unselected));
     }
 }

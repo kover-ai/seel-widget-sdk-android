@@ -90,7 +90,7 @@ public class SeelWFPTitleView extends LinearLayout {
         
         // Create price label
         priceLabel = new TextView(getContext());
-        priceLabel.setText(" for -");
+        priceLabel.setText(R.string.seel_price_placeholder);
         priceLabel.setTextSize(10);
         priceLabel.setTextColor(getResources().getColor(android.R.color.black));
 
@@ -113,7 +113,7 @@ public class SeelWFPTitleView extends LinearLayout {
 
         // Create Powered by label
         poweredLabel = new TextView(getContext());
-        poweredLabel.setText(R.string.powered_by);
+        poweredLabel.setText(R.string.seel_powered_by);
         poweredLabel.setTextSize(7.5f);
         poweredLabel.setTextColor(0xFF565656);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
@@ -217,10 +217,10 @@ public class SeelWFPTitleView extends LinearLayout {
         if (price != null) {
             if (isLoading) {
                 animationView.startAnimating();
-                priceLabel.setText(" for");
+                priceLabel.setText(R.string.seel_price_prefix);
             } else  {
                 animationView.stopAnimating();
-                priceLabel.setText(" for $" + String.format("%.2f", price));
+                priceLabel.setText(String.format(java.util.Locale.US, getContext().getString(R.string.seel_price_format), price));
             }
             priceLabel.setVisibility(VISIBLE);
         } else {

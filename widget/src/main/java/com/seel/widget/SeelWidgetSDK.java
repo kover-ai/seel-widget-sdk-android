@@ -83,21 +83,25 @@ public class SeelWidgetSDK {
      * @param callback Callback interface
      */
     public void createEvents(EventsRequest event, SeelApiClient.SeelApiCallback<EventsResponse> callback) {
+        if (callback == null) return;
+
         if (!isConfigured()) {
             callback.onError(NetworkError.CONFIGURATION_ERROR, "SDK not configured");
             return;
         }
         
-        // Use the context from SeelClient instead of passing null
         Context context = seelClient.getContext();
         if (context == null) {
             callback.onError(NetworkError.CONFIGURATION_ERROR, "Context not available");
             return;
         }
 
-        UUID uuid = UUID.randomUUID();
-        String uuidString = uuid.toString();
-        event.setEventID(uuidString);
+        if (event == null) {
+            callback.onError(NetworkError.CONFIGURATION_ERROR, "Event request cannot be null");
+            return;
+        }
+
+        event.setEventID(UUID.randomUUID().toString());
         SeelApiClient.getInstance(context).createEvents(event, callback);
     }
 }

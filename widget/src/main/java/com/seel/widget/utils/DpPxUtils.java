@@ -12,14 +12,13 @@ public class DpPxUtils {
     
     public static int dp(float value) {
         try {
-            // 通过反射获取 Application Context
             Class<?> activityThread = Class.forName("android.app.ActivityThread");
             Object currentActivityThread = activityThread.getMethod("currentActivityThread").invoke(null);
             Application app = (Application) activityThread.getMethod("getApplication").invoke(currentActivityThread);
             return dip2px(app, value);
         } catch (Exception e) {
-            // 如果获取失败，抛出异常提示使用带 context 参数的版本
-            throw new RuntimeException("无法获取 Application Context，请使用 dp(Context context, int value) 方法", e);
+            throw new RuntimeException(
+                    "Failed to obtain Application Context via reflection. Use dip2px(Context, float) instead.", e);
         }
     }
 
