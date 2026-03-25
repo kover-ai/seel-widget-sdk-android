@@ -56,6 +56,13 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
     private boolean isDisabled = false;
 
     @Override
+    public WFPWidgetDefaults defaults() {
+        WFPWidgetDefaults d = new WFPWidgetDefaults();
+        d.showDisclaimer = false;
+        return d;
+    }
+
+    @Override
     public void buildLayout(ViewGroup container, WFPWidgetLayoutActions actions) {
         this.actions = actions;
         Context context = container.getContext();
@@ -121,12 +128,8 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
         imgParams.gravity = Gravity.CENTER;
         checkboxButton.addView(checkboxImage, imgParams);
         checkboxButton.setOnClickListener(v -> {
-            if (!isDisabled) {
-                isOn = !isOn;
-                updateCheckboxState();
-                if (this.actions != null) {
-                    this.actions.getOnToggleChanged().onChanged(isOn);
-                }
+            if (!isDisabled && this.actions != null) {
+                this.actions.getOnToggleChanged().onChanged(!isOn);
             }
         });
 
@@ -212,7 +215,16 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
         isDisabled = isRejected;
         updateCheckboxState();
 
-        container.setBackgroundColor(isRejected ? 0xFFF0EFEF : 0xFFFFFFFF);
+        if (isRejected) {
+            Integer disabledBg = data.getDisabledBackgroundColor();
+            container.setBackgroundColor(disabledBg != null ? disabledBg : 0xFFF0EFEF);
+        } else if (isChecked) {
+            Integer selectedBg = data.getSelectedBackgroundColor();
+            container.setBackgroundColor(selectedBg != null ? selectedBg : 0xFFFFFFFF);
+        } else {
+            Integer normalBg = data.getNormalBackgroundColor();
+            container.setBackgroundColor(normalBg != null ? normalBg : 0xFFFFFFFF);
+        }
         container.setAlpha(1.0f);
 
         int titleColor = isRejected ? 0xFF676667 : 0xFF292728;
@@ -271,10 +283,10 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
             subtitleLabel.setVisibility(View.GONE);
         }
 
-        // Disclaimer
+        // Disclaimer — hidden when showDisclaimer is false or rejected
         String disclaimer = quoteResponse.getExtraInfo() != null
                 ? quoteResponse.getExtraInfo().getWidgetDisclaimer() : null;
-        if (!isRejected && disclaimer != null && !disclaimer.isEmpty()) {
+        if (data.isShowDisclaimer() && !isRejected && disclaimer != null && !disclaimer.isEmpty()) {
             disclaimerLabel.setText(disclaimer);
             disclaimerLabel.setVisibility(View.VISIBLE);
         } else {

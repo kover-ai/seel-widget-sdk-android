@@ -45,6 +45,35 @@ public class SeelWFPView extends LinearLayout {
      */
     public static ToggleStyle toggleStyle = ToggleStyle.SWITCH_STYLE;
 
+    /**
+     * Background color for normal (unchecked) state.
+     * null means the layout provider uses its own default.
+     */
+    private Integer normalBackgroundColor = null;
+
+    /**
+     * Background color for selected (opted-in) state.
+     * null means the layout provider uses its own default.
+     */
+    private Integer selectedBackgroundColor = null;
+
+    /**
+     * Background color for disabled (rejected) state.
+     * null means the layout provider uses its own default.
+     */
+    private Integer disabledBackgroundColor = null;
+
+    /**
+     * Whether to show the disclaimer text below the widget.
+     * null means use the layout provider's default (e.g. false for EBTH, true for others).
+     */
+    private Boolean showDisclaimer = null;
+
+    /**
+     * Corner radius in pixels. 0 means no rounding.
+     */
+    private float cornerRadius = 0f;
+
     private WFPOptedInCallback optedInCallback;
     private QuotesResponse quoteResponse;
     private boolean loading = false;
@@ -93,10 +122,37 @@ public class SeelWFPView extends LinearLayout {
 
     private void refreshLayout() {
         if (layoutProvider != null) {
+            boolean effectiveShowDisclaimer = showDisclaimer != null
+                    ? showDisclaimer : layoutProvider.defaults().showDisclaimer;
             layoutProvider.updateLayout(this, new WFPWidgetLayoutData(
-                    quoteResponse, loading, toggleStyle, toggleIsOn
+                    quoteResponse, loading, toggleStyle, toggleIsOn,
+                    normalBackgroundColor, selectedBackgroundColor,
+                    disabledBackgroundColor, effectiveShowDisclaimer
             ));
+            applyBackground();
         }
+    }
+
+    /**
+     * Applies background color (with optional corner radius) AFTER the layout provider
+     * has called setBackgroundColor(). This ensures cornerRadius is never lost.
+     */
+    private void applyBackground() {
+        if (cornerRadius <= 0) {
+            setClipToOutline(false);
+            return;
+        }
+        int color;
+        if (getBackground() instanceof android.graphics.drawable.ColorDrawable) {
+            color = ((android.graphics.drawable.ColorDrawable) getBackground()).getColor();
+        } else {
+            color = 0x00000000;
+        }
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setColor(color);
+        bg.setCornerRadius(cornerRadius);
+        setBackground(bg);
+        setClipToOutline(true);
     }
 
     private void sdkDebugLog(String message) {
@@ -130,6 +186,34 @@ public class SeelWFPView extends LinearLayout {
 
     public void setOptedInCallback(WFPOptedInCallback callback) {
         this.optedInCallback = callback;
+    }
+
+    public void setNormalBackgroundColor(int color) {
+        this.normalBackgroundColor = color;
+        refreshLayout();
+    }
+
+    public void setSelectedBackgroundColor(int color) {
+        this.selectedBackgroundColor = color;
+        refreshLayout();
+    }
+
+    public void setDisabledBackgroundColor(int color) {
+        this.disabledBackgroundColor = color;
+        refreshLayout();
+    }
+
+    public void setShowDisclaimer(boolean show) {
+        this.showDisclaimer = show;
+        refreshLayout();
+    }
+
+    /**
+     * Set corner radius in pixels.
+     */
+    public void setCornerRadius(float radiusPx) {
+        this.cornerRadius = radiusPx;
+        refreshLayout();
     }
 
     // MARK: - Actions & Business Logic
@@ -178,6 +262,7 @@ public class SeelWFPView extends LinearLayout {
         toggleIsOn = isOn;
         updateLocalOptedIn(isOn);
         optedChanged(isOn);
+        refreshLayout();
     }
 
     private void createQuote(QuotesRequest quote, boolean isSetup, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {

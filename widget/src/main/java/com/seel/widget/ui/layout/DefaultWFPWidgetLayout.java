@@ -90,14 +90,27 @@ public class DefaultWFPWidgetLayout implements WFPWidgetLayoutProvider {
         boolean displayView = quoteResponse != null;
 
         container.setVisibility(displayView ? View.VISIBLE : View.GONE);
+        if (!displayView) return;
 
-        boolean isRejected = quoteResponse != null && quoteResponse.isRejected();
+        boolean isRejected = quoteResponse.isRejected();
+        boolean isChecked = data.isToggleOn() && !isRejected;
+
+        if (isRejected) {
+            Integer disabledBg = data.getDisabledBackgroundColor();
+            container.setBackgroundColor(disabledBg != null ? disabledBg : Constants.BACKGROUND_COLOR);
+        } else if (isChecked) {
+            Integer selectedBg = data.getSelectedBackgroundColor();
+            container.setBackgroundColor(selectedBg != null ? selectedBg : Constants.BACKGROUND_COLOR);
+        } else {
+            Integer normalBg = data.getNormalBackgroundColor();
+            container.setBackgroundColor(normalBg != null ? normalBg : Constants.BACKGROUND_COLOR);
+        }
         container.setAlpha(isRejected ? 0.9f : 1.0f);
 
-        titleView.setTitle(quoteResponse != null && quoteResponse.getExtraInfo() != null
+        titleView.setTitle(quoteResponse.getExtraInfo() != null
                 ? quoteResponse.getExtraInfo().getWidgetTitle() : null);
-        titleView.setPrice(quoteResponse != null && !isRejected ? quoteResponse.getPrice() : null);
-        titleView.setShowInfo(!isRejected && quoteResponse != null);
+        titleView.setPrice(!isRejected ? quoteResponse.getPrice() : null);
+        titleView.setShowInfo(!isRejected);
         titleView.setLoading(data.isLoading());
         titleView.updateViews();
 
@@ -111,15 +124,15 @@ public class DefaultWFPWidgetLayout implements WFPWidgetLayoutProvider {
         }
 
         View toggle = currentToggleStyle == ToggleStyle.SWITCH_STYLE ? switcher : checkbox;
-        toggle.setVisibility(quoteResponse == null || isRejected ? View.GONE : View.VISIBLE);
+        toggle.setVisibility(isRejected ? View.GONE : View.VISIBLE);
 
         switcher.setOn(data.isToggleOn());
         checkbox.setOn(data.isToggleOn());
 
         updateDetailViews(quoteResponse);
 
-        // Disclaimer
-        if (quoteResponse != null && quoteResponse.getExtraInfo() != null
+        // Disclaimer — hidden when showDisclaimer is false or rejected
+        if (data.isShowDisclaimer() && quoteResponse.getExtraInfo() != null
                 && quoteResponse.getExtraInfo().getWidgetDisclaimer() != null
                 && !quoteResponse.getExtraInfo().getWidgetDisclaimer().isEmpty()) {
             disclaimerLabel.setText(quoteResponse.getExtraInfo().getWidgetDisclaimer());

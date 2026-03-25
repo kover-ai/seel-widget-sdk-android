@@ -19,4 +19,9 @@ public interface WFPWidgetLayoutProvider {
      * Called whenever data changes (quote loaded, toggle state, loading, etc.).
      */
     void updateLayout(ViewGroup container, WFPWidgetLayoutData data);
+
+    /**
+     * Brand-specific default values. Override in subclasses to customize.
+     */
+    default WFPWidgetDefaults defaults() { return new WFPWidgetDefaults(); }
 }
