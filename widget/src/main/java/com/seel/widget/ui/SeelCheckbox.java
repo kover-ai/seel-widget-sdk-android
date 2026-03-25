@@ -63,7 +63,7 @@ public class SeelCheckbox extends FrameLayout {
         } else {
             imageView.setImageResource(R.mipmap.checkbox_normal);
         }
-        setContentDescription(isOn ? "Selected" : "Unselected");
+        setContentDescription(getContext().getString(isOn ? R.string.seel_a11y_selected : R.string.seel_a11y_unselected));
     }
 
     public boolean isOn() { return isOn; }

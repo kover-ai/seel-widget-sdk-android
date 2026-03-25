@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.seel.widget.R;
 import com.seel.widget.utils.DpPxUtils;
 
+
 /**
  * Coverage Info Footer
  */
@@ -67,7 +68,7 @@ public class CoverageInfoFooter extends LinearLayout {
     private void createViews() {
         // Create Opt-In button
         optedInButton = new Button(getContext());
-        optedInButton.setText("Opt-In Now for Full Protection");
+        optedInButton.setText(R.string.seel_opt_in_now);
         optedInButton.setAllCaps(false);
         optedInButton.setTextColor(getResources().getColor(android.R.color.white));
         optedInButton.setTextSize(12);
@@ -91,7 +92,7 @@ public class CoverageInfoFooter extends LinearLayout {
         
         // Create No Need button
         noNeedButton = new TextView(getContext());
-        noNeedButton.setText("No Need");
+        noNeedButton.setText(R.string.seel_no_need);
         noNeedButton.setTextColor(0xFF4F4F4F);
         noNeedButton.setTextSize(14);
         noNeedButton.setOnClickListener(v -> {
@@ -107,7 +108,7 @@ public class CoverageInfoFooter extends LinearLayout {
         
         // Create privacy policy link
         privacyPolicyButton = new TextView(getContext());
-        privacyPolicyButton.setText("Privacy Policy");
+        privacyPolicyButton.setText(R.string.seel_privacy_policy);
         privacyPolicyButton.setTextColor(0xFF555555);
         privacyPolicyButton.setTextSize(12);
         privacyPolicyButton.getPaint().setUnderlineText(true);
@@ -119,7 +120,7 @@ public class CoverageInfoFooter extends LinearLayout {
         
         // Create terms of service link
         termsButton = new TextView(getContext());
-        termsButton.setText("Terms of Service");
+        termsButton.setText(R.string.seel_terms_of_service);
         termsButton.setTextColor(0xFF555555);
         termsButton.setTextSize(12);
         termsButton.getPaint().setUnderlineText(true);

@@ -1,6 +1,7 @@
 package com.seel.widget.ui;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.seel.widget.models.QuotesResponse;
@@ -39,7 +40,12 @@ public class SeelWFPInfoActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        QuotesResponse quoteResponse = (QuotesResponse) getIntent().getSerializableExtra("quote_response");
+        QuotesResponse quoteResponse;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            quoteResponse = getIntent().getSerializableExtra("quote_response", QuotesResponse.class);
+        } else {
+            quoteResponse = (QuotesResponse) getIntent().getSerializableExtra("quote_response");
+        }
         String brandType = getIntent().getStringExtra("brand_type");
 
         WFPInfoLayoutProvider layoutProvider = WFPInfoLayoutFactory.provider(brandType);
@@ -73,5 +79,18 @@ public class SeelWFPInfoActivity extends Activity {
         staticNoNeedClickListener = noNeedListener;
         staticPrivacyPolicyClickListener = privacyPolicyListener;
         staticTermsClickListener = termsListener;
+    }
+
+    private static void clearStaticCallbacks() {
+        staticOptedInClickListener = null;
+        staticNoNeedClickListener = null;
+        staticPrivacyPolicyClickListener = null;
+        staticTermsClickListener = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        clearStaticCallbacks();
     }
 }

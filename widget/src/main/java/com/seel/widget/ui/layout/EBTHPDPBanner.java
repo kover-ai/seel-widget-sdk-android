@@ -49,9 +49,9 @@ public class EBTHPDPBanner implements PDPBannerLayoutProvider {
         logo.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         TextView label = new TextView(context);
-        String text = "Worry-Free Purchase® available with seel";
+        String text = context.getString(R.string.seel_pdp_banner_text);
         SpannableString spannable = new SpannableString(text);
-        int seelStart = text.lastIndexOf("seel");
+        int seelStart = text.lastIndexOf("Seel");
         spannable.setSpan(new StyleSpan(Typeface.BOLD), seelStart, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         label.setText(spannable);
         label.setTextSize(13);

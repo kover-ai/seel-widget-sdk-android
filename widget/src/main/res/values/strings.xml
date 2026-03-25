@@ -1,14 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Seel Widget SDK</string>
-    <string name="powered_by">Powered by</string>
-    <string name="whats_covered">What\'s Covered by Seel</string>
-    <string name="opt_in_now">Opt-In Now for Full Protection</string>
-    <string name="no_need">No Need</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="terms_of_service">Terms of Service</string>
+
+    <!-- Common -->
+    <string name="seel_powered_by">Powered by</string>
+    <string name="seel_powered_by_seel">Powered By Seel</string>
+    <string name="seel_close">Close</string>
+    <string name="seel_loading">Loading…</string>
+    <string name="seel_privacy_policy">Privacy Policy</string>
+    <string name="seel_terms_of_service">Terms of Service</string>
+
+    <!-- Widget -->
+    <string name="seel_price_format"> for $%1$.2f</string>
+    <string name="seel_price_placeholder"> for -</string>
+    <string name="seel_price_prefix"> for</string>
+
+    <!-- PDP Banner -->
+    <string name="seel_pdp_banner_text">Worry-Free Purchase® available with Seel</string>
+
+    <!-- Default Info Modal -->
+    <string name="seel_whats_covered_by_seel">What\'s Covered by Seel</string>
+    <string name="seel_opt_in_now">Opt-In Now for Full Protection</string>
+    <string name="seel_no_need">No Need</string>
+    <string name="seel_coverage_title">Get a Full Refund, No Questions Asked</string>
+
+    <!-- Coverage Tips -->
+    <string name="seel_easy_resolution">Easy Resolution</string>
+    <string name="seel_easy_resolution_detail">Resolve your issues with just a few clicks</string>
+    <string name="seel_complete_peace_of_mind">Complete Peace of Mind</string>
+    <string name="seel_benefits_list">• Zero-risk on your order with our protection\n• Get your refund promptly</string>
+
+    <!-- EBTH Info Modal -->
+    <string name="seel_ebth_header_title">We\'ve Got You Covered</string>
+    <string name="seel_ebth_header_subtitle">Only $%1$.2f for Complete Peace of Mind</string>
+    <string name="seel_ebth_whats_covered">What\'s Covered</string>
+    <string name="seel_ebth_instant_resolution">Instant Resolution</string>
+    <string name="seel_ebth_instant_resolution_detail">Quick resolution in just a few clicks</string>
+    <string name="seel_ebth_support">24/7 Support</string>
+    <string name="seel_ebth_support_detail">Get help anytime with fast response</string>
+    <string name="seel_ebth_opt_in">Secure Your Purchase Now</string>
+    <string name="seel_ebth_no_need">Continue Without Protection</string>
+
+    <!-- Tooltip -->
+    <string name="seel_tooltip_intro">We\'re unable to offer Worry-Free Purchase® Protection for this order. This could be due to one or more of the following reasons:\n\n</string>
+    <string name="seel_tooltip_outro">\nIf you have any questions, please contact our customer support team for assistance.</string>
+    <string name="seel_tooltip_reason_shipping">Shipping destination not supported</string>
+    <string name="seel_tooltip_reason_currency">Checkout currency not accepted</string>
+    <string name="seel_tooltip_reason_value">Order value exceeds our coverage limit</string>
+    <string name="seel_tooltip_reason_item">Item(s) not eligible for this service</string>
+    <string name="seel_tooltip_reason_flagged">Our system has flagged this order as ineligible</string>
+
+    <!-- Accessibility -->
+    <string name="seel_a11y_selected">Selected</string>
+    <string name="seel_a11y_unselected">Unselected</string>
 </resources>
-
-
-
-

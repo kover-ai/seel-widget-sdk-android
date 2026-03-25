@@ -22,7 +22,6 @@ import com.seel.widget.models.QuotesResponse;
 import com.seel.widget.utils.DpPxUtils;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * EBTH-specific WFP info modal layout.
@@ -98,7 +97,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
 
         // Header title: "We've Got You Covered"
         TextView headerTitleLabel = new TextView(activity);
-        headerTitleLabel.setText("We've Got You Covered");
+        headerTitleLabel.setText(R.string.seel_ebth_header_title);
         headerTitleLabel.setTextSize(20);
         headerTitleLabel.setTypeface(Typeface.create("sans-serif-black", Typeface.BOLD));
         headerTitleLabel.setTextColor(Color.WHITE);
@@ -112,7 +111,8 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         TextView headerSubtitleLabel = new TextView(activity);
         Double price = quoteResponse != null ? quoteResponse.getPrice() : null;
         if (price != null) {
-            headerSubtitleLabel.setText(String.format(Locale.US, "Only $%.2f for Complete Peace of Mind", price));
+            headerSubtitleLabel.setText(String.format(java.util.Locale.US,
+                    "Only $%.2f for Complete Peace of Mind", price));
         }
         headerSubtitleLabel.setTextSize(16);
         headerSubtitleLabel.setTypeface(null, Typeface.NORMAL);
@@ -174,7 +174,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         shieldIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         TextView coverageHeaderLabel = new TextView(activity);
-        coverageHeaderLabel.setText("What's Covered");
+        coverageHeaderLabel.setText(R.string.seel_ebth_whats_covered);
         coverageHeaderLabel.setTextSize(16);
         coverageHeaderLabel.setTypeface(null, Typeface.BOLD);
         coverageHeaderLabel.setTextColor(0xFF000000);
@@ -209,9 +209,11 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         featureRow.setOrientation(LinearLayout.HORIZONTAL);
 
         View resolutionCard = buildFeatureCard(activity, R.mipmap.bolt,
-                "Instant Resolution", "Quick resolution in just a few clicks");
+                activity.getString(R.string.seel_ebth_instant_resolution),
+                activity.getString(R.string.seel_ebth_instant_resolution_detail));
         View supportCard = buildFeatureCard(activity, R.mipmap.headphones,
-                "24/7 Support", "Get help anytime with fast response");
+                activity.getString(R.string.seel_ebth_support),
+                activity.getString(R.string.seel_ebth_support_detail));
 
         LinearLayout.LayoutParams featureParams1 = new LinearLayout.LayoutParams(
                 0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -342,7 +344,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
 
         // Opt-in button: height=52dp
         TextView optInButton = new TextView(activity);
-        optInButton.setText("Secure Your Purchase Now");
+        optInButton.setText(R.string.seel_ebth_opt_in);
         optInButton.setTextColor(Color.WHITE);
         optInButton.setTextSize(14);
         optInButton.setTypeface(null, Typeface.BOLD);
@@ -357,7 +359,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
 
         // "Continue Without Protection" button
         TextView noNeedButton = new TextView(activity);
-        noNeedButton.setText("Continue Without Protection");
+        noNeedButton.setText(R.string.seel_ebth_no_need);
         noNeedButton.setTextColor(0xFF808692);
         noNeedButton.setTextSize(14);
         noNeedButton.setTypeface(null, Typeface.BOLD);
@@ -384,9 +386,9 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         LinearLayout linksStack = new LinearLayout(activity);
         linksStack.setOrientation(LinearLayout.HORIZONTAL);
 
-        TextView privacyButton = buildUnderlineButton(activity, "Privacy Policy");
+        TextView privacyButton = buildUnderlineButton(activity, activity.getString(R.string.seel_privacy_policy));
         privacyButton.setOnClickListener(v -> actions.getOnPrivacyPolicy().run());
-        TextView termsButton = buildUnderlineButton(activity, "Terms of Service");
+        TextView termsButton = buildUnderlineButton(activity, activity.getString(R.string.seel_terms_of_service));
         termsButton.setOnClickListener(v -> actions.getOnTerms().run());
 
         LinearLayout.LayoutParams termsParams = new LinearLayout.LayoutParams(
@@ -398,8 +400,12 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
 
         // "Powered By Seel"
         TextView poweredBy = new TextView(activity);
-        SpannableString poweredText = new SpannableString("Powered By Seel");
-        poweredText.setSpan(new StyleSpan(Typeface.BOLD), 11, 15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        String poweredStr = activity.getString(R.string.seel_powered_by_seel);
+        SpannableString poweredText = new SpannableString(poweredStr);
+        int seelIdx = poweredStr.lastIndexOf("Seel");
+        if (seelIdx >= 0) {
+            poweredText.setSpan(new StyleSpan(Typeface.BOLD), seelIdx, poweredStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         poweredBy.setText(poweredText);
         poweredBy.setTextSize(10);
         poweredBy.setTextColor(0xFF000000);

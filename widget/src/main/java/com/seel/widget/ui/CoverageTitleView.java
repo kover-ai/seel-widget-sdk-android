@@ -12,12 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.seel.widget.R;
+import com.seel.widget.core.FormatMoney;
 import com.seel.widget.utils.DpPxUtils;
 
 public class CoverageTitleView extends LinearLayout {
     // Data
     private String title;
     private Double price;
+    private String currency;
 
     // UI Components
     private ImageView seelIcon;
@@ -102,7 +104,7 @@ public class CoverageTitleView extends LinearLayout {
         titleLabel.setText(title);
         // Update price display
         if (price != null) {
-            priceLabel.setText("for $" + String.format("%.2f", price));
+            priceLabel.setText("for " + FormatMoney.formatMoney(price, currency));
             priceLabel.setVisibility(VISIBLE);
         } else {
             priceLabel.setVisibility(GONE);
@@ -114,5 +116,7 @@ public class CoverageTitleView extends LinearLayout {
     public void setTitle(String title) { this.title = title; }
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
 
 }

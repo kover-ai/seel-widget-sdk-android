@@ -2,8 +2,9 @@ package com.seel.widget.ui;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -44,12 +45,42 @@ public class SeelWFPView extends LinearLayout {
      */
     public static ToggleStyle toggleStyle = ToggleStyle.SWITCH_STYLE;
 
+    /**
+     * Background color for normal (unchecked) state.
+     * null means the layout provider uses its own default.
+     */
+    private Integer normalBackgroundColor = null;
+
+    /**
+     * Background color for selected (opted-in) state.
+     * null means the layout provider uses its own default.
+     */
+    private Integer selectedBackgroundColor = null;
+
+    /**
+     * Background color for disabled (rejected) state.
+     * null means the layout provider uses its own default.
+     */
+    private Integer disabledBackgroundColor = null;
+
+    /**
+     * Whether to show the disclaimer text below the widget.
+     * null means use the layout provider's default (e.g. false for EBTH, true for others).
+     */
+    private Boolean showDisclaimer = null;
+
+    /**
+     * Corner radius in pixels. 0 means no rounding.
+     */
+    private float cornerRadius = 0f;
+
     private WFPOptedInCallback optedInCallback;
     private QuotesResponse quoteResponse;
     private boolean loading = false;
     private boolean toggleIsOn = true;
     private WFPWidgetLayoutProvider layoutProvider;
     private int latestRequestToken = 0;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public SeelWFPView(Context context) {
         super(context);
@@ -91,10 +122,37 @@ public class SeelWFPView extends LinearLayout {
 
     private void refreshLayout() {
         if (layoutProvider != null) {
+            boolean effectiveShowDisclaimer = showDisclaimer != null
+                    ? showDisclaimer : layoutProvider.defaults().showDisclaimer;
             layoutProvider.updateLayout(this, new WFPWidgetLayoutData(
-                    quoteResponse, loading, toggleStyle, toggleIsOn
+                    quoteResponse, loading, toggleStyle, toggleIsOn,
+                    normalBackgroundColor, selectedBackgroundColor,
+                    disabledBackgroundColor, effectiveShowDisclaimer
             ));
+            applyBackground();
         }
+    }
+
+    /**
+     * Applies background color (with optional corner radius) AFTER the layout provider
+     * has called setBackgroundColor(). This ensures cornerRadius is never lost.
+     */
+    private void applyBackground() {
+        if (cornerRadius <= 0) {
+            setClipToOutline(false);
+            return;
+        }
+        int color;
+        if (getBackground() instanceof android.graphics.drawable.ColorDrawable) {
+            color = ((android.graphics.drawable.ColorDrawable) getBackground()).getColor();
+        } else {
+            color = 0x00000000;
+        }
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setColor(color);
+        bg.setCornerRadius(cornerRadius);
+        setBackground(bg);
+        setClipToOutline(true);
     }
 
     private void sdkDebugLog(String message) {
@@ -130,14 +188,47 @@ public class SeelWFPView extends LinearLayout {
         this.optedInCallback = callback;
     }
 
+    public void setNormalBackgroundColor(int color) {
+        this.normalBackgroundColor = color;
+        refreshLayout();
+    }
+
+    public void setSelectedBackgroundColor(int color) {
+        this.selectedBackgroundColor = color;
+        refreshLayout();
+    }
+
+    public void setDisabledBackgroundColor(int color) {
+        this.disabledBackgroundColor = color;
+        refreshLayout();
+    }
+
+    public void setShowDisclaimer(boolean show) {
+        this.showDisclaimer = show;
+        refreshLayout();
+    }
+
+    /**
+     * Set corner radius in pixels.
+     */
+    public void setCornerRadius(float radiusPx) {
+        this.cornerRadius = radiusPx;
+        refreshLayout();
+    }
+
     // MARK: - Actions & Business Logic
 
     private void displayInfo() {
         if (quoteResponse == null) return;
 
-        android.content.Intent intent = new android.content.Intent(getContext(), SeelWFPInfoActivity.class);
+        Context ctx = getContext();
+        android.content.Intent intent = new android.content.Intent(ctx, SeelWFPInfoActivity.class);
         intent.putExtra("quote_response", quoteResponse);
         intent.putExtra("brand_type", quoteResponse.getType());
+
+        if (!(ctx instanceof android.app.Activity)) {
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
 
         SeelWFPInfoActivity.setStaticCallbacks(
                 () -> {
@@ -150,17 +241,17 @@ public class SeelWFPView extends LinearLayout {
                 },
                 () -> {
                     if (quoteResponse.getExtraInfo() != null && quoteResponse.getExtraInfo().getPrivacyPolicyURL() != null) {
-                        SeelWebViewController.show(getContext(), quoteResponse.getExtraInfo().getPrivacyPolicyURL());
+                        SeelWebViewController.show(ctx, quoteResponse.getExtraInfo().getPrivacyPolicyURL());
                     }
                 },
                 () -> {
                     if (quoteResponse.getExtraInfo() != null && quoteResponse.getExtraInfo().getTermsURL() != null) {
-                        SeelWebViewController.show(getContext(), quoteResponse.getExtraInfo().getTermsURL());
+                        SeelWebViewController.show(ctx, quoteResponse.getExtraInfo().getTermsURL());
                     }
                 }
         );
 
-        getContext().startActivity(intent);
+        ctx.startActivity(intent);
     }
 
     private void showDisabledTooltip() {
@@ -171,6 +262,7 @@ public class SeelWFPView extends LinearLayout {
         toggleIsOn = isOn;
         updateLocalOptedIn(isOn);
         optedChanged(isOn);
+        refreshLayout();
     }
 
     private void createQuote(QuotesRequest quote, boolean isSetup, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
@@ -182,7 +274,7 @@ public class SeelWFPView extends LinearLayout {
         SeelApiClient.getInstance(getContext()).getQuotes(quote, new SeelApiCallback<>() {
             @Override
             public void onSuccess(QuotesResponse response) {
-                ((Activity) getContext()).runOnUiThread(() -> {
+                mainHandler.post(() -> {
                     if (requestToken != latestRequestToken) {
                         sdkDebugLog("ignore stale quote response => token: " + requestToken + ", latest: " + latestRequestToken);
                         if (callback != null) callback.onSuccess(response);
@@ -212,7 +304,7 @@ public class SeelWFPView extends LinearLayout {
 
             @Override
             public void onError(NetworkError error, String message) {
-                ((Activity) getContext()).runOnUiThread(() -> {
+                mainHandler.post(() -> {
                     if (requestToken != latestRequestToken) {
                         if (callback != null) callback.onError(error, message);
                         return;
@@ -223,8 +315,6 @@ public class SeelWFPView extends LinearLayout {
                     quoteResponse = null;
                     refreshLayout();
                     optedChanged(false);
-
-                    android.util.Log.e("SeelWFPView", "SeelWFPView_Get quote error: " + message);
                     if (callback != null) callback.onError(error, message);
                 });
             }

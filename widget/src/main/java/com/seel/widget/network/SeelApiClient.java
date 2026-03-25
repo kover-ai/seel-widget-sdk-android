@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.seel.widget.core.Constants;
 import com.seel.widget.core.SeelClient;
+import com.seel.widget.core.SeelLogger;
 import com.seel.widget.models.QuotesRequest;
 import com.seel.widget.models.QuotesResponse;
 import com.seel.widget.models.EventsRequest;
@@ -106,7 +107,7 @@ public class SeelApiClient {
                     }
                     
                     Request newRequest = requestBuilder.build();
-                    Log.d(TAG, "Making request to: " + newRequest.url());
+                    SeelLogger.debug(TAG, "Making request to: %s", newRequest.url());
                     
                     return chain.proceed(newRequest);
                 }
@@ -186,50 +187,49 @@ public class SeelApiClient {
     public void getQuotes(@NonNull QuotesRequest quote, @NonNull SeelApiCallback<QuotesResponse> callback) {
         if (!isInitialized) {
             Log.e(TAG, Constants.ERROR_CLIENT_NOT_INITIALIZED);
-            callback.onError(NetworkError.UNKNOWN, Constants.ERROR_CLIENT_NOT_INITIALIZED);
+            callback.onError(NetworkError.CONFIGURATION_ERROR, Constants.ERROR_CLIENT_NOT_INITIALIZED);
             return;
         }
         
         if (!SeelClient.getInstance().isConfigured()) {
             Log.e(TAG, Constants.ERROR_NOT_CONFIGURED);
-            callback.onError(NetworkError.UNKNOWN, Constants.ERROR_NOT_CONFIGURED);
+            callback.onError(NetworkError.CONFIGURATION_ERROR, Constants.ERROR_NOT_CONFIGURED);
             return;
         }
         
         if (quote == null) {
             Log.e(TAG, Constants.ERROR_REQUEST_NULL);
-            callback.onError(NetworkError.UNKNOWN, Constants.ERROR_REQUEST_NULL);
+            callback.onError(NetworkError.CONFIGURATION_ERROR, Constants.ERROR_REQUEST_NULL);
             return;
         }
         
-        Log.d(TAG, "Getting quotes for cart: " + quote.getCartID());
+        SeelLogger.debug(TAG, "Getting quotes for cart: %s", quote.getCartID());
         
         Call<QuotesResponse> call = apiService.getQuotes(quote);
         call.enqueue(new Callback<QuotesResponse>() {
             @Override
             public void onResponse(Call<QuotesResponse> call, retrofit2.Response<QuotesResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d(TAG, "Quote request successful");
+                    SeelLogger.debug(TAG, "Quote request successful");
                     callback.onSuccess(response.body());
                 } else {
-                    String errorMsg = "Server error: " + response.code();
+                    String publicMsg = "Server error: " + response.code();
                     if (response.errorBody() != null) {
                         try {
-                            errorMsg += " - " + response.errorBody().string();
+                            String body = response.errorBody().string();
+                            SeelLogger.debug(TAG, "Quote error body: %s", body);
                         } catch (IOException e) {
-                            Log.w(TAG, "Failed to read error body", e);
+                            SeelLogger.debug(TAG, "Failed to read error body");
                         }
                     }
-                    Log.e(TAG, errorMsg);
-                    callback.onError(NetworkError.SERVER_ERROR, errorMsg);
+                    callback.onError(NetworkError.SERVER_ERROR, publicMsg);
                 }
             }
             
             @Override
             public void onFailure(Call<QuotesResponse> call, Throwable t) {
-                String errorMsg = t != null ? t.getMessage() : "Unknown error";
-                Log.e(TAG, "Quote request failed: " + errorMsg, t);
-                callback.onError(NetworkError.NETWORK_ERROR, errorMsg);
+                SeelLogger.debug(TAG, "Quote request failed: %s", t != null ? t.getMessage() : "unknown");
+                callback.onError(NetworkError.NETWORK_ERROR, "Network request failed");
             }
         });
     }
@@ -242,50 +242,49 @@ public class SeelApiClient {
     public void createEvents(@NonNull EventsRequest eventsRequest, @NonNull SeelApiCallback<EventsResponse> callback) {
         if (!isInitialized) {
             Log.e(TAG, Constants.ERROR_CLIENT_NOT_INITIALIZED);
-            callback.onError(NetworkError.UNKNOWN, Constants.ERROR_CLIENT_NOT_INITIALIZED);
+            callback.onError(NetworkError.CONFIGURATION_ERROR, Constants.ERROR_CLIENT_NOT_INITIALIZED);
             return;
         }
         
         if (!SeelClient.getInstance().isConfigured()) {
             Log.e(TAG, Constants.ERROR_NOT_CONFIGURED);
-            callback.onError(NetworkError.UNKNOWN, Constants.ERROR_NOT_CONFIGURED);
+            callback.onError(NetworkError.CONFIGURATION_ERROR, Constants.ERROR_NOT_CONFIGURED);
             return;
         }
         
         if (eventsRequest == null) {
             Log.e(TAG, Constants.ERROR_REQUEST_NULL);
-            callback.onError(NetworkError.UNKNOWN, Constants.ERROR_REQUEST_NULL);
+            callback.onError(NetworkError.CONFIGURATION_ERROR, Constants.ERROR_REQUEST_NULL);
             return;
         }
         
-        Log.d(TAG, "Creating events");
+        SeelLogger.debug(TAG, "Creating events");
         
         Call<EventsResponse> call = logApiService.createEvents(eventsRequest);
         call.enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, retrofit2.Response<EventsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d(TAG, "Event creation successful");
+                    SeelLogger.debug(TAG, "Event creation successful");
                     callback.onSuccess(response.body());
                 } else {
-                    String errorMsg = "Server error: " + response.code();
+                    String publicMsg = "Server error: " + response.code();
                     if (response.errorBody() != null) {
                         try {
-                            errorMsg += " - " + response.errorBody().string();
+                            String body = response.errorBody().string();
+                            SeelLogger.debug(TAG, "Event error body: %s", body);
                         } catch (IOException e) {
-                            Log.w(TAG, "Failed to read error body", e);
+                            SeelLogger.debug(TAG, "Failed to read event error body");
                         }
                     }
-                    Log.e(TAG, errorMsg);
-                    callback.onError(NetworkError.SERVER_ERROR, errorMsg);
+                    callback.onError(NetworkError.SERVER_ERROR, publicMsg);
                 }
             }
             
             @Override
             public void onFailure(Call<EventsResponse> call, Throwable t) {
-                String errorMsg = t != null ? t.getMessage() : "Unknown error";
-                Log.e(TAG, "Event creation failed: " + errorMsg, t);
-                callback.onError(NetworkError.NETWORK_ERROR, errorMsg);
+                SeelLogger.debug(TAG, "Event creation failed: %s", t != null ? t.getMessage() : "unknown");
+                callback.onError(NetworkError.NETWORK_ERROR, "Network request failed");
             }
         });
     }

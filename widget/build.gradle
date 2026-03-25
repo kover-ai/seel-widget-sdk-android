@@ -117,7 +117,7 @@ mavenPublishing {
 
     pom {
         name = "seel widget sdk"
-        description = 'Seel weidget SDK for Android'
+        description = 'Seel widget SDK for Android'
         url = 'https://github.com/kover-ai/seel-widget-sdk-android'
         licenses {
             license {

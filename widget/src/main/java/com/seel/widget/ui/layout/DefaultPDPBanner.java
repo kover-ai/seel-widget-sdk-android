@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.seel.widget.R;
 import com.seel.widget.utils.DpPxUtils;
 
 /**
@@ -39,9 +40,9 @@ public class DefaultPDPBanner implements PDPBannerLayoutProvider {
         container.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
 
         TextView label = new TextView(context);
-        String text = "Worry-Free Purchase® available with Seel";
+        String text = context.getString(R.string.seel_pdp_banner_text);
         SpannableString spannable = new SpannableString(text);
-        int seelStart = text.indexOf("Seel");
+        int seelStart = text.lastIndexOf("Seel");
         spannable.setSpan(new StyleSpan(Typeface.BOLD), seelStart, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannable.setSpan(new ForegroundColorSpan(0xFF2121C4), seelStart, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         label.setText(spannable);

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.seel.widget.R;
+import com.seel.widget.core.FormatMoney;
 import com.seel.widget.utils.DpPxUtils;
 
 /**
@@ -31,6 +32,7 @@ public class SeelWFPTitleView extends LinearLayout {
     // Data
     private String title;
     private Double price;
+    private String currency;
     private Boolean loading;
     private boolean showInfo = false;
     private boolean showPowered = false;
@@ -90,7 +92,7 @@ public class SeelWFPTitleView extends LinearLayout {
         
         // Create price label
         priceLabel = new TextView(getContext());
-        priceLabel.setText(" for -");
+        priceLabel.setText(R.string.seel_price_placeholder);
         priceLabel.setTextSize(10);
         priceLabel.setTextColor(getResources().getColor(android.R.color.black));
 
@@ -113,7 +115,7 @@ public class SeelWFPTitleView extends LinearLayout {
 
         // Create Powered by label
         poweredLabel = new TextView(getContext());
-        poweredLabel.setText(R.string.powered_by);
+        poweredLabel.setText(R.string.seel_powered_by);
         poweredLabel.setTextSize(7.5f);
         poweredLabel.setTextColor(0xFF565656);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
@@ -217,10 +219,10 @@ public class SeelWFPTitleView extends LinearLayout {
         if (price != null) {
             if (isLoading) {
                 animationView.startAnimating();
-                priceLabel.setText(" for");
+                priceLabel.setText(R.string.seel_price_prefix);
             } else  {
                 animationView.stopAnimating();
-                priceLabel.setText(" for $" + String.format("%.2f", price));
+                priceLabel.setText(" for " + FormatMoney.formatMoney(price, currency));
             }
             priceLabel.setVisibility(VISIBLE);
         } else {
@@ -240,6 +242,8 @@ public class SeelWFPTitleView extends LinearLayout {
     public void setTitle(String title) { this.title = title; }
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
     public Boolean getLoading() { return loading; }
     public void setLoading(Boolean loading) { this.loading = loading; }
     

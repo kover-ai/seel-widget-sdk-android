@@ -96,10 +96,7 @@ public class MainActivity extends Activity {
 
         // WFP View
         seelWFPView = new SeelWFPView(this);
-        GradientDrawable wfpBg = new GradientDrawable();
-        wfpBg.setColor(0xFFFFFFFF);
-        wfpBg.setCornerRadius(dp(8));
-        seelWFPView.setBackground(wfpBg);
+        seelWFPView.setCornerRadius(dp(8));
         LinearLayout.LayoutParams wfpParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         wfpParams.topMargin = dp(12);
