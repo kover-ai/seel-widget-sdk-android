@@ -14,7 +14,7 @@ Add the following to your `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation 'com.seel.widgetsdk:seel-widget-sdk:1.0.16'
+    implementation 'com.seel.widgetsdk:seel-widget-sdk:1.0.18'
 }
 ```
 
@@ -311,6 +311,15 @@ See the `example` module for a complete implementation. The example demonstrates
 - Opted-in state caching and display
 
 ## Changelog
+
+### Version 1.0.18
+- Add locale-aware currency formatting (`FormatMoney`) aligned with iOS SDK
+- Add widget style customization APIs: `setNormalBackgroundColor`, `setSelectedBackgroundColor`, `setDisabledBackgroundColor`, `setCornerRadius`, `setShowDisclaimer`
+- Refactor brand-specific defaults with Provider Defaults pattern (OCP compliant)
+- Fix disclaimer text duplication and background color not applying correctly
+- Fix checkbox toggle not updating background color
+- Harden error handling and extract UI strings to resources
+- Update README with widget customization documentation
 
 ### Version 1.0.3
 - Add brand-specific layout system (Provider + Factory pattern)
