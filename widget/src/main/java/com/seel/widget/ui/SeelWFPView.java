@@ -14,6 +14,7 @@ import com.seel.widget.core.Constants;
 import com.seel.widget.core.SeelEnvironment;
 import com.seel.widget.models.QuotesRequest;
 import com.seel.widget.models.QuotesResponse;
+import com.seel.widget.models.UserConfigRequest;
 import com.seel.widget.network.SeelApiClient;
 import com.seel.widget.network.SeelApiClient.SeelApiCallback;
 import com.seel.widget.network.NetworkError;
@@ -238,6 +239,7 @@ public class SeelWFPView extends LinearLayout {
                 () -> {
                     updateLocalOptedIn(false);
                     turnOn(false);
+                    postOptOutUserConfig();
                 },
                 () -> {
                     if (quoteResponse.getExtraInfo() != null && quoteResponse.getExtraInfo().getPrivacyPolicyURL() != null) {
@@ -263,6 +265,32 @@ public class SeelWFPView extends LinearLayout {
         updateLocalOptedIn(isOn);
         optedChanged(isOn);
         refreshLayout();
+
+        if (!isOn) {
+            postOptOutUserConfig();
+        }
+    }
+
+    /**
+     * POST /v1/ecommerce/user-configs/{user_id} when the user opts out.
+     * Only enabled for EBTH platform (type == "ebth-wfp").
+     * Requires both merchant_id and customer.customer_id from the latest quote response.
+     */
+    private void postOptOutUserConfig() {
+        if (quoteResponse == null || !"ebth-wfp".equals(quoteResponse.getType())) return;
+
+        String merchantID = quoteResponse.getMerchantID();
+        QuotesResponse.Customer customer = quoteResponse.getCustomer();
+        String userID = customer != null ? customer.getCustomerID() : null;
+
+        if (merchantID == null || merchantID.isEmpty() || userID == null || userID.isEmpty()) {
+            sdkDebugLog("postOptOutUserConfig skipped => missing merchant_id or customer_id");
+            return;
+        }
+
+        sdkDebugLog("postOptOutUserConfig => merchant_id: " + merchantID + ", user_id: " + userID);
+        SeelApiClient.getInstance(getContext())
+                .postUserConfig(userID, new UserConfigRequest(merchantID, true));
     }
 
     private void createQuote(QuotesRequest quote, boolean isSetup, SeelApiClient.SeelApiCallback<QuotesResponse> callback) {
