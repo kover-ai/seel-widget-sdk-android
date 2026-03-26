@@ -12,6 +12,7 @@ import com.seel.widget.models.QuotesRequest;
 import com.seel.widget.models.QuotesResponse;
 import com.seel.widget.models.EventsRequest;
 import com.seel.widget.models.EventsResponse;
+import com.seel.widget.models.UserConfigRequest;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -289,6 +290,44 @@ public class SeelApiClient {
         });
     }
     
+    /**
+     * Post user config (opt-out). Fire-and-forget: logs result in non-production only.
+     * @param userID   Customer user ID (path parameter)
+     * @param request  UserConfigRequest body
+     */
+    public void postUserConfig(@NonNull String userID, @NonNull UserConfigRequest request) {
+        if (!isInitialized || !SeelClient.getInstance().isConfigured()) {
+            SeelLogger.debug(TAG, "postUserConfig skipped => client not ready");
+            return;
+        }
+
+        Call<okhttp3.ResponseBody> call = apiService.postUserConfig(userID, request);
+        call.enqueue(new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<okhttp3.ResponseBody> call, retrofit2.Response<okhttp3.ResponseBody> response) {
+                if (SeelClient.getInstance().getEnvironment() != com.seel.widget.core.SeelEnvironment.PRODUCTION) {
+                    if (response.isSuccessful()) {
+                        try {
+                            String body = response.body() != null ? response.body().string() : "(empty)";
+                            SeelLogger.debug(TAG, "postUserConfig response => %s", body);
+                        } catch (IOException e) {
+                            SeelLogger.debug(TAG, "postUserConfig response => (read error)");
+                        }
+                    } else {
+                        SeelLogger.debug(TAG, "postUserConfig failed => %d", response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                if (SeelClient.getInstance().getEnvironment() != com.seel.widget.core.SeelEnvironment.PRODUCTION) {
+                    SeelLogger.debug(TAG, "postUserConfig failed => %s", t != null ? t.getMessage() : "unknown");
+                }
+            }
+        });
+    }
+
     /**
      * Check if client is initialized
      * @return true if initialized
