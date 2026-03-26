@@ -14,7 +14,7 @@ Add the following to your `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation 'com.seel.widgetsdk:seel-widget-sdk:1.0.18'
+    implementation 'com.seel.widgetsdk:seel-widget-sdk:1.0.20'
 }
 ```
 
@@ -312,28 +312,7 @@ See the `example` module for a complete implementation. The example demonstrates
 
 ## Changelog
 
-### Version 1.0.18
-- Add locale-aware currency formatting (`FormatMoney`) aligned with iOS SDK
-- Add widget style customization APIs: `setNormalBackgroundColor`, `setSelectedBackgroundColor`, `setDisabledBackgroundColor`, `setCornerRadius`, `setShowDisclaimer`
-- Refactor brand-specific defaults with Provider Defaults pattern (OCP compliant)
-- Fix disclaimer text duplication and background color not applying correctly
-- Fix checkbox toggle not updating background color
-- Harden error handling and extract UI strings to resources
-- Update README with widget customization documentation
-
-### Version 1.0.3
-- Add brand-specific layout system (Provider + Factory pattern)
-- Add EBTH brand layouts (widget, info modal, PDP banner)
-- Add SeelCheckbox, SeelTooltipView, SeelPDPBannerView components
-- Refactor SeelWFPView and SeelWFPInfoActivity to use layout providers
-- Align required fields and UI with iOS SDK
-- Add image assets to mipmap/
-
-### Version 1.0.1
-- Update configuration API
-
-### Version 1.0.0
-- Initial release
+See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
 ## License
 
