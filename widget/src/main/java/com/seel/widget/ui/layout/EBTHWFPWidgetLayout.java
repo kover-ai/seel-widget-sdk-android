@@ -233,8 +233,8 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
             String widgetTitle = quoteResponse.getExtraInfo() != null
                     ? quoteResponse.getExtraInfo().getWidgetTitle() : "";
             titleLabel.setText(widgetTitle);
-            titleLabel.setTextSize(15);
-            titleLabel.setTypeface(null, Typeface.BOLD);
+            titleLabel.setTextSize(14);
+            setFontWeight(titleLabel, 600);
             titleLabel.setTextColor(titleColor);
             priceLoadingView.setVisibility(View.GONE);
             priceLoadingView.stopAnimating();
@@ -242,8 +242,8 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
             String title = quoteResponse.getExtraInfo() != null
                     ? quoteResponse.getExtraInfo().getWidgetTitle() : "";
             titleLabel.setText(title);
-            titleLabel.setTextSize(15);
-            titleLabel.setTypeface(null, Typeface.BOLD);
+            titleLabel.setTextSize(14);
+            setFontWeight(titleLabel, 600);
             titleLabel.setTextColor(titleColor);
             priceLoadingView.setVisibility(View.VISIBLE);
             priceLoadingView.startAnimating();
@@ -256,13 +256,20 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
             String full = title + priceText;
 
             SpannableString spannable = new SpannableString(full);
-            spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(new StyleSpan(Typeface.NORMAL), title.length(), full.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                spannable.setSpan(new android.text.style.TypefaceSpan(Typeface.create(null, 600, false)),
+                        0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannable.setSpan(new android.text.style.TypefaceSpan(Typeface.create(null, 400, false)),
+                        title.length(), full.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannable.setSpan(new StyleSpan(Typeface.NORMAL), title.length(), full.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             spannable.setSpan(new ForegroundColorSpan(titleColor), 0, full.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             titleLabel.setTypeface(null, Typeface.NORMAL);
             titleLabel.setText(spannable);
-            titleLabel.setTextSize(15);
+            titleLabel.setTextSize(14);
             priceLoadingView.setVisibility(View.GONE);
             priceLoadingView.stopAnimating();
         }
@@ -311,6 +318,14 @@ public class EBTHWFPWidgetLayout implements WFPWidgetLayoutProvider {
         ViewGroup.MarginLayoutParams cbLp = (ViewGroup.MarginLayoutParams) checkboxButton.getLayoutParams();
         cbLp.topMargin = targetTop;
         checkboxButton.setLayoutParams(cbLp);
+    }
+
+    private static void setFontWeight(TextView tv, int weight) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            tv.setTypeface(Typeface.create(null, weight, false));
+        } else {
+            tv.setTypeface(null, weight >= 600 ? Typeface.BOLD : Typeface.NORMAL);
+        }
     }
 
     private void updateCheckboxState() {

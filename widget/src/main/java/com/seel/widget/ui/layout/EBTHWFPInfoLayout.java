@@ -18,6 +18,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.seel.widget.R;
+import com.seel.widget.core.FormatMoney;
 import com.seel.widget.models.QuotesResponse;
 import com.seel.widget.utils.DpPxUtils;
 
@@ -98,8 +99,8 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         // Header title: "We've Got You Covered"
         TextView headerTitleLabel = new TextView(activity);
         headerTitleLabel.setText(R.string.seel_ebth_header_title);
-        headerTitleLabel.setTextSize(20);
-        headerTitleLabel.setTypeface(Typeface.create("sans-serif-black", Typeface.BOLD));
+        headerTitleLabel.setTextSize(18);
+        setFontWeight(headerTitleLabel, 800);
         headerTitleLabel.setTextColor(Color.WHITE);
         // iOS: top = seelLogoIcon.bottom + 24 = (24+22) + 24 = 70
         FrameLayout.LayoutParams headerTitleParams = new FrameLayout.LayoutParams(
@@ -110,12 +111,13 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         // Header subtitle: "Only $X.XX for Complete Peace of Mind"
         TextView headerSubtitleLabel = new TextView(activity);
         Double price = quoteResponse != null ? quoteResponse.getPrice() : null;
+        String currency = quoteResponse != null ? quoteResponse.getCurrency() : null;
         if (price != null) {
-            headerSubtitleLabel.setText(String.format(java.util.Locale.US,
-                    "Only $%.2f for Complete Peace of Mind", price));
+            String priceText = FormatMoney.formatMoney(price, currency);
+            headerSubtitleLabel.setText(activity.getString(R.string.seel_ebth_header_subtitle, priceText));
         }
-        headerSubtitleLabel.setTextSize(16);
-        headerSubtitleLabel.setTypeface(null, Typeface.NORMAL);
+        headerSubtitleLabel.setTextSize(14);
+        setFontWeight(headerSubtitleLabel, 500);
         headerSubtitleLabel.setTextColor(Color.WHITE);
         // iOS: top = headerTitleLabel.bottom + 24
         // Approximate: title at 70, single line ~24dp height, so subtitle at ~118
@@ -146,8 +148,8 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
                 ? quoteResponse.getExtraInfo().getWidgetTitle() : "";
         wfpTitleLabel.setText(widgetTitle != null ? widgetTitle : "");
         wfpTitleLabel.setTextSize(20);
-        wfpTitleLabel.setTypeface(null, Typeface.BOLD);
-        wfpTitleLabel.setTextColor(0xFF1E2022);
+        setFontWeight(wfpTitleLabel, 600);
+        wfpTitleLabel.setTextColor(0xFF000000);
         wfpTitleLabel.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams wfpTitleParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -175,8 +177,8 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
 
         TextView coverageHeaderLabel = new TextView(activity);
         coverageHeaderLabel.setText(R.string.seel_ebth_whats_covered);
-        coverageHeaderLabel.setTextSize(16);
-        coverageHeaderLabel.setTypeface(null, Typeface.BOLD);
+        coverageHeaderLabel.setTextSize(14);
+        setFontWeight(coverageHeaderLabel, 600);
         coverageHeaderLabel.setTextColor(0xFF000000);
         LinearLayout.LayoutParams coverageLabelParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -265,23 +267,16 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         checkIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         TextView label = new TextView(activity);
-        label.setTextSize(14);
+        label.setTextSize(12);
         label.setTextColor(0xFF000000);
 
-        String[] parts = text.split(" - ", 2);
+        String[] parts = text.split(" [-–] ", 2);
         if (parts.length >= 2) {
             SpannableString spannable = new SpannableString(text);
             spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, parts[0].length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             label.setText(spannable);
         } else {
-            String[] dashParts = text.split(" – ", 2);
-            if (dashParts.length >= 2) {
-                SpannableString spannable = new SpannableString(text);
-                spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dashParts[0].length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                label.setText(spannable);
-            } else {
-                label.setText(text);
-            }
+            label.setText(text);
         }
 
         // checkIcon: 20x20, left=7, vertically centered to first line of label
@@ -317,8 +312,8 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         // Title
         TextView titleLabel = new TextView(activity);
         titleLabel.setText(title);
-        titleLabel.setTextSize(16);
-        titleLabel.setTypeface(null, Typeface.BOLD);
+        titleLabel.setTextSize(14);
+        setFontWeight(titleLabel, 600);
         titleLabel.setTextColor(0xFF000000);
         LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -328,7 +323,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         // Detail
         TextView detailLabel = new TextView(activity);
         detailLabel.setText(detail);
-        detailLabel.setTextSize(14);
+        detailLabel.setTextSize(12);
         detailLabel.setTextColor(0xFF000000);
         LinearLayout.LayoutParams detailParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -347,7 +342,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         optInButton.setText(R.string.seel_ebth_opt_in);
         optInButton.setTextColor(Color.WHITE);
         optInButton.setTextSize(14);
-        optInButton.setTypeface(null, Typeface.BOLD);
+        setFontWeight(optInButton, 600);
         optInButton.setGravity(Gravity.CENTER);
         GradientDrawable optInBg = new GradientDrawable();
         optInBg.setColor(0xFF000000);
@@ -362,7 +357,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         noNeedButton.setText(R.string.seel_ebth_no_need);
         noNeedButton.setTextColor(0xFF808692);
         noNeedButton.setTextSize(14);
-        noNeedButton.setTypeface(null, Typeface.BOLD);
+        setFontWeight(noNeedButton, 600);
         noNeedButton.setGravity(Gravity.CENTER);
         noNeedButton.setOnClickListener(v -> actions.getOnNoNeed().run());
         LinearLayout.LayoutParams noNeedParams = new LinearLayout.LayoutParams(
@@ -372,7 +367,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
 
         // Divider
         View divider = new View(activity);
-        divider.setBackgroundColor(0xFFE0E0E0);
+        divider.setBackgroundColor(0xFF5C5F62);
         LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, DpPxUtils.dp(1));
         dividerParams.topMargin = DpPxUtils.dp(20);
@@ -422,6 +417,14 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         return footer;
     }
 
+    private static void setFontWeight(TextView tv, int weight) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            tv.setTypeface(Typeface.create(null, weight, false));
+        } else {
+            tv.setTypeface(null, weight >= 600 ? Typeface.BOLD : Typeface.NORMAL);
+        }
+    }
+
     private TextView buildUnderlineButton(Activity activity, String title) {
         TextView button = new TextView(activity);
         SpannableString spannable = new SpannableString(title);
@@ -429,6 +432,7 @@ public class EBTHWFPInfoLayout implements WFPInfoLayoutProvider {
         button.setText(spannable);
         button.setTextSize(11);
         button.setTextColor(0xFF5C5F62);
+        setFontWeight(button, 400);
         return button;
     }
 }
