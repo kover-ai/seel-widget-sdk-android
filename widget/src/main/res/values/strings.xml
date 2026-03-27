@@ -32,11 +32,11 @@
 
     <!-- EBTH Info Modal -->
     <string name="seel_ebth_header_title">We\'ve Got You Covered</string>
-    <string name="seel_ebth_header_subtitle">Only $%1$.2f for Complete Peace of Mind</string>
+    <string name="seel_ebth_header_subtitle">Only %1$s for Complete Peace of Mind</string>
     <string name="seel_ebth_whats_covered">What\'s Covered</string>
     <string name="seel_ebth_instant_resolution">Instant Resolution</string>
     <string name="seel_ebth_instant_resolution_detail">Quick resolution in just a few clicks</string>
-    <string name="seel_ebth_support">24/7 Support</string>
+    <string name="seel_ebth_support">24/7 Support by Seel</string>
     <string name="seel_ebth_support_detail">Get help anytime with fast response</string>
     <string name="seel_ebth_opt_in">Secure Your Purchase Now</string>
     <string name="seel_ebth_no_need">Continue Without Protection</string>
