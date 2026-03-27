@@ -9,15 +9,9 @@ ext {
     compileSdkVersion = 34
     minSdkVersion = 24
     targetSdkVersion = 34
-    version = '1.0.20'
+    version = '1.1.0'
 }
 
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
-
-
-
-
-
-

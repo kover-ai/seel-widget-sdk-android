@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.1.0
+- Refine EBTH widget and info modal font weights, sizes, and formatting
+
 ## Version 1.0.20
 - Add opt-out user config API (`POST /v1/ecommerce/user-configs/{user_id}`) aligned with iOS SDK
 
