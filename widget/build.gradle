@@ -139,6 +139,14 @@ mavenPublishing {
 }
 
 signing {
+    if (project.hasProperty("signingInMemoryKey")) {
+        useInMemoryPgpKeys(
+            project.findProperty("signingInMemoryKey"),
+            project.findProperty("signingInMemoryKeyPassword")
+        )
+    } else {
+        useGpgCmd()
+    }
     sign publishing.publications
 }
 
